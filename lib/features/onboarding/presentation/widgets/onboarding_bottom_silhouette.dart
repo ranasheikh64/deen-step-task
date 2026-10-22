@@ -29,7 +29,7 @@ class OnboardingBottomSilhouette extends StatelessWidget {
                 ? const SizedBox.shrink(key: ValueKey('none'))
                 : Opacity(
                     key: ValueKey(bgImage),
-                    opacity: 0.6,
+                    opacity: 0.75,
                     child: SvgPicture.asset(
                       bgImage,
                       width: MediaQuery.of(context).size.width,
