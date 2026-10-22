@@ -26,7 +26,13 @@ abstract class AuthRepository {
   Future<Either<Failure, String>> resendOtp({required String email});
 
   Future<Either<Failure, AuthResultEntity>> guestLogin({
-    required String deviceId,
+    String? deviceId,
+  });
+
+  Future<Either<Failure, AuthResultEntity>> socialAuth({
+    required String idToken,
+    required String provider,
+    String? deviceId,
   });
 
   Future<Either<Failure, void>> logout();

@@ -10,11 +10,13 @@ class SocialAuthButtons extends StatelessWidget {
   const SocialAuthButtons({
     super.key,
     this.label = 'Log In With',
+    this.isLoading = false,
     this.onGoogleTap,
     this.onAppleTap,
   });
 
   final String label;
+  final bool isLoading;
   final VoidCallback? onGoogleTap;
   final VoidCallback? onAppleTap;
 
@@ -23,55 +25,33 @@ class SocialAuthButtons extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // OR Divider
         Row(
           children: [
-            const Expanded(
-              child: Divider(color: AppColors.divider, thickness: 1),
-            ),
+            const Expanded(child: Divider(color: AppColors.divider, thickness: 1)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: Text(
-                'OR',
-                style: AppTypography.bodySmall(color: AppColors.textTertiary),
-              ),
+              child: Text('OR', style: AppTypography.bodySmall(color: AppColors.textTertiary)),
             ),
-            const Expanded(
-              child: Divider(color: AppColors.divider, thickness: 1),
-            ),
+            const Expanded(child: Divider(color: AppColors.divider, thickness: 1)),
           ],
         ),
         const SizedBox(height: AppSpacing.lg),
-
-        // Label
-        Text(
-          label,
-          style: AppTypography.buttonSmall(color: AppColors.textTertiary),
-        ),
+        Text(label, style: AppTypography.buttonSmall(color: AppColors.textTertiary)),
         const SizedBox(height: AppSpacing.md),
-
-        // Social Icons Row
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Google Button
             _buildSocialCard(
               backgroundColor: Colors.white,
-              icon: SvgPicture.asset(
-                AssetPaths.icGoogle,
-                width: 18,
-                height: 18,
-              ),
-              onTap: onGoogleTap,
+              icon: SvgPicture.asset(AssetPaths.icGoogle, width: 18, height: 18),
+              onTap: isLoading ? null : onGoogleTap,
             ),
             const SizedBox(width: AppSpacing.lg),
-
-            // Apple Button
             _buildSocialCard(
               backgroundColor: AppColors.buttonSecondaryBackground,
               borderColor: AppColors.border,
               icon: SvgPicture.asset(AssetPaths.icApple, width: 18, height: 18),
-              onTap: onAppleTap,
+              onTap: isLoading ? null : onAppleTap,
             ),
           ],
         ),
@@ -85,27 +65,26 @@ class SocialAuthButtons extends StatelessWidget {
     Color? borderColor,
     VoidCallback? onTap,
   }) {
-    return Container(
-      width: 44,
-      height: 44,
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: AppSpacing.roundedMd,
-        border: borderColor != null ? Border.all(color: borderColor) : null,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x0D000000),
-            blurRadius: 2,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Material(
-        color: AppColors.transparent,
-        child: InkWell(
+    return Opacity(
+      opacity: isLoading ? 0.6 : 1.0,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: backgroundColor,
           borderRadius: AppSpacing.roundedMd,
-          onTap: onTap,
-          child: Center(child: icon),
+          border: borderColor != null ? Border.all(color: borderColor) : null,
+          boxShadow: const [
+            BoxShadow(color: Color(0x0D000000), blurRadius: 2, offset: Offset(0, 1)),
+          ],
+        ),
+        child: Material(
+          color: AppColors.transparent,
+          child: InkWell(
+            borderRadius: AppSpacing.roundedMd,
+            onTap: onTap,
+            child: Center(child: icon),
+          ),
         ),
       ),
     );
