@@ -1,0 +1,564 @@
+{
+  "info": {
+    "_postman_id": "deen-step-api-collection-v1",
+    "name": "Deen-Step API Collection",
+    "description": "Targeted API endpoints for Deen-Step Flutter App: Authentication (Login, Register, OTP, Attempts) and Home Screen (Dashboard, Prayers, Location, Streaks).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://test.deenstep.com",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refreshToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "deviceId",
+      "value": "fcm_token_test_device_123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login (Email + Password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aisha@example.com\",\n  \"password\": \"Str0ngP@ssw0rd!\",\n  \"device_id\": \"{{deviceId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login",
+                ""
+              ]
+            },
+            "description": "Validates credentials and returns SimpleJWT access and refresh token pair."
+          },
+          "response": [
+            {
+              "name": "200 Success - Login",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Success\",\n  \"code\": 200,\n  \"data\": {\n    \"detail\": \"Login successful.\",\n    \"access\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_access_token\",\n    \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_refresh_token\",\n    \"user\": {\n      \"id\": 42,\n      \"email\": \"aisha@example.com\",\n      \"full_name\": \"Aisha Rahman\",\n      \"mobile\": null,\n      \"is_verified\": true,\n      \"firebase_uid\": \"\"\n    }\n  }\n}"
+            },
+            {
+              "name": "401 Invalid Credentials",
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Unauthorized\",\n  \"code\": 401,\n  \"error\": {\n    \"code\": \"UNAUTHENTICATED\",\n    \"message\": \"Invalid email or password.\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Register / Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Aisha Rahman\",\n  \"email\": \"aisha@example.com\",\n  \"password\": \"Str0ngP@ssw0rd!\",\n  \"confirm_password\": \"Str0ngP@ssw0rd!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/sign-up/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "sign-up",
+                ""
+              ]
+            },
+            "description": "Creates an unverified account and emails a 4-digit OTP."
+          },
+          "response": [
+            {
+              "name": "201 Created - Sign Up",
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Success\",\n  \"code\": 201,\n  \"data\": {\n    \"detail\": \"Account created. Check your email for the 4-digit OTP.\",\n    \"user\": {\n      \"id\": 42,\n      \"email\": \"aisha@example.com\",\n      \"full_name\": \"Aisha Rahman\",\n      \"mobile\": null,\n      \"is_verified\": false,\n      \"firebase_uid\": \"\"\n    }\n  }\n}"
+            },
+            {
+              "name": "409 Conflict - Email Already Registered",
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Conflict\",\n  \"code\": 409,\n  \"error\": {\n    \"code\": \"CONFLICT\",\n    \"message\": \"Email already registered.\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Verify OTP (Sign Up)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aisha@example.com\",\n  \"otp\": \"4827\",\n  \"device_id\": \"{{deviceId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/sign-up/verify/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "sign-up",
+                "verify",
+                ""
+              ]
+            },
+            "description": "Confirms the 4-digit OTP, marks user verified, and returns JWT tokens."
+          },
+          "response": [
+            {
+              "name": "200 Success - OTP Verified",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Success\",\n  \"code\": 200,\n  \"data\": {\n    \"detail\": \"Email verified.\",\n    \"user\": {\n      \"id\": 42,\n      \"email\": \"aisha@example.com\",\n      \"full_name\": \"Aisha Rahman\",\n      \"mobile\": null,\n      \"is_verified\": true,\n      \"firebase_uid\": \"\"\n    },\n    \"access\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_access_token\",\n    \"refresh\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example_refresh_token\"\n  }\n}"
+            },
+            {
+              "name": "400 Bad Request - Invalid OTP",
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Bad Request\",\n  \"code\": 400,\n  \"error\": {\n    \"code\": \"BAD_REQUEST\",\n    \"message\": \"Invalid or expired OTP.\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Resend OTP / Password Reset OTP Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aisha@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/password-management/reset-otp-request/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "password-management",
+                "reset-otp-request",
+                ""
+              ]
+            },
+            "description": "Sends a 4-digit OTP to the email address. Always returns 200 to prevent user enumeration."
+          },
+          "response": [
+            {
+              "name": "200 Success - OTP Sent",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Success\",\n  \"code\": 200,\n  \"data\": {\n    \"detail\": \"If the email is registered, an OTP has been sent.\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Multiple Attempts / Rate Limited (429)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"aisha@example.com\",\n  \"otp\": \"0000\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/sign-up/verify/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "sign-up",
+                "verify",
+                ""
+              ]
+            },
+            "description": "Represents lock out after multiple failed OTP attempts or rate limit triggered."
+          },
+          "response": [
+            {
+              "name": "429 Too Many Attempts",
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                },
+                {
+                  "key": "Retry-After",
+                  "value": "60"
+                }
+              ],
+              "body": "{\n  \"status\": \"Too Many Requests\",\n  \"code\": 429,\n  \"error\": {\n    \"code\": \"TOO_MANY_ATTEMPTS\",\n    \"message\": \"Too many failed attempts. Please wait 60 seconds before trying again.\",\n    \"retry_after_seconds\": 60\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Refresh Access Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refresh_token\": \"{{refreshToken}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh-token/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh-token",
+                ""
+              ]
+            },
+            "description": "Exchanges valid refresh token for a fresh access token."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "2. Home Screen & Prayers",
+      "item": [
+        {
+          "name": "Home Screen Dashboard (Complete One-Roundtrip)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/dashboard/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "dashboard",
+                ""
+              ]
+            },
+            "description": "Returns complete data for Home Screen: location, Hijri date, 5 prayer timings, next prayer countdown, daily goal, streak, AI reflection, and abundance verse."
+          },
+          "response": [
+            {
+              "name": "200 Success - Home Dashboard",
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"Success\",\n  \"code\": 200,\n  \"data\": {\n    \"status\": \"ok\",\n    \"location\": {\n      \"latitude\": \"23.810300\",\n      \"longitude\": \"90.412500\",\n      \"address\": \"Gulshan, Dhaka\",\n      \"city\": \"Dhaka\",\n      \"country_code\": \"BD\",\n      \"timezone\": \"Asia/Dhaka\"\n    },\n    \"method\": {\n      \"id\": 1,\n      \"name\": \"University of Islamic Sciences, Karachi\"\n    },\n    \"asr_juristic_method\": {\n      \"id\": 0,\n      \"key\": \"standard\",\n      \"name\": \"Standard\",\n      \"description\": \"Shafi'i, Maliki, Hanbali (Shadow equals object length)\"\n    },\n    \"date\": {\n      \"gregorian\": {\n        \"date\": \"25-10-2025\",\n        \"weekday_en\": \"Saturday\"\n      },\n      \"hijri\": {\n        \"date\": \"03-05-1447\",\n        \"day\": 3,\n        \"month_en\": \"Jum\\u0101d\\u0101 al-Awwal\",\n        \"year\": 1447\n      }\n    },\n    \"timings\": {\n      \"Fajr\": \"04:03\",\n      \"Sunrise\": \"05:45\",\n      \"Dhuhr\": \"11:37\",\n      \"Asr\": \"15:00\",\n      \"Maghrib\": \"17:48\",\n      \"Isha\": \"19:02\"\n    },\n    \"next_prayer\": {\n      \"name\": \"Maghrib\",\n      \"at\": \"17:48\",\n      \"seconds_until\": 1743\n    },\n    \"daily_goal\": {\n      \"completed\": 0,\n      \"target\": 5\n    },\n    \"streak\": {\n      \"current\": 0,\n      \"longest\": 5,\n      \"counted_today\": false,\n      \"last_counted_date\": null\n    },\n    \"ai_reflection\": {\n      \"text\": \"Assalamu alaikum! Welcome to your space for spiritual growth. Every big journey begins with a small step. Log your first prayer today to start building a beautiful, consistent habit\",\n      \"source\": \"rules\",\n      \"for_date\": \"2025-10-25\"\n    },\n    \"abundance_verse\": {\n      \"kind\": \"hadith\",\n      \"arabic\": \"\\u0627\\u0644\\u0652\\u062d\\u064e\\u0645\\u0652\\u062f\\u064f \\u0644\\u0650\\u0644\\u0651\\u064e\\u0647\\u0650\",\n      \"translation\": \"Start your daily verse by input them in reflections.\",\n      \"reference\": \"Sahih al-Bukhari, 6412\"\n    }\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Current User Location",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/current/location/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "current",
+                "location",
+                ""
+              ]
+            },
+            "description": "Returns the currently stored location for the authenticated user."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Location (Upsert GPS Coordinates)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": \"23.8103\",\n  \"longitude\": \"90.4125\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/location/update/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "user",
+                "location",
+                "update",
+                ""
+              ]
+            },
+            "description": "Updates user location by latitude and longitude. Reverse geocoding is performed automatically server-side."
+          },
+          "response": []
+        },
+        {
+          "name": "Prayer Screen Bootstrap (Timings + Prayers + Goal + Streak)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/prayer/today/?latitude=23.8103&longitude=90.4125",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "prayer",
+                "today",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "23.8103"
+                },
+                {
+                  "key": "longitude",
+                  "value": "90.4125"
+                }
+              ]
+            },
+            "description": "Send GPS coordinates to get the day timings, 5 prayer rows, daily goal and streak."
+          },
+          "response": []
+        },
+        {
+          "name": "Daily Goal & Streak",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/prayer/streak/?latitude=23.8103&longitude=90.4125",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "prayer",
+                "streak",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "latitude",
+                  "value": "23.8103"
+                },
+                {
+                  "key": "longitude",
+                  "value": "90.4125"
+                }
+              ]
+            },
+            "description": "Returns daily goal completion count and current streak."
+          },
+          "response": []
+        },
+        {
+          "name": "Log Prayer (Mark Prayer Done / Undo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prayer\": \"dhuhr\",\n  \"completed\": true,\n  \"latitude\": \"23.8103\",\n  \"longitude\": \"90.4125\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/prayer/log/",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "prayer",
+                "log",
+                ""
+              ]
+            },
+            "description": "Marks a specific prayer done (e.g. Dhuhr) or undoes it. Returns updated prayer list, goal, and streak."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
