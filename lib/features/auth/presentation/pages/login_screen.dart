@@ -28,14 +28,33 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool get _isFormFilled =>
+      _emailController.text.trim().isNotEmpty &&
+      _passwordController.text.isNotEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_onFieldChanged);
+    _passwordController.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() {
+    setState(() {});
+  }
+
   @override
   void dispose() {
+    _emailController.removeListener(_onFieldChanged);
+    _passwordController.removeListener(_onFieldChanged);
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
   void _onLogin() {
+    if (!_isFormFilled) return;
+
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
         AuthLoginSubmitted(
@@ -135,7 +154,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       DeenButton(
                         text: 'Log In',
                         isLoading: isLoading,
-                        onPressed: _onLogin,
+                        isEnabled: _isFormFilled && !isLoading,
+                        onPressed: _isFormFilled ? _onLogin : null,
                       ),
                       const SizedBox(height: AppSpacing.lg),
 

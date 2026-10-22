@@ -33,8 +33,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _agreedToTerms = false;
 
+  bool get _isFormFilled =>
+      _nameController.text.trim().isNotEmpty &&
+      _emailController.text.trim().isNotEmpty &&
+      _passwordController.text.isNotEmpty &&
+      _confirmPasswordController.text.isNotEmpty &&
+      _agreedToTerms;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(_onFieldChanged);
+    _emailController.addListener(_onFieldChanged);
+    _passwordController.addListener(_onFieldChanged);
+    _confirmPasswordController.addListener(_onFieldChanged);
+  }
+
+  void _onFieldChanged() {
+    setState(() {});
+  }
+
   @override
   void dispose() {
+    _nameController.removeListener(_onFieldChanged);
+    _emailController.removeListener(_onFieldChanged);
+    _passwordController.removeListener(_onFieldChanged);
+    _confirmPasswordController.removeListener(_onFieldChanged);
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -43,13 +67,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onRegister() {
-    if (!_agreedToTerms) {
-      DeenSnackBar.showWarning(
-        context,
-        'Please agree to the Privacy Policy and Terms',
-      );
-      return;
-    }
+    if (!_isFormFilled) return;
 
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
@@ -224,7 +242,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       DeenButton(
                         text: 'Register Account',
                         isLoading: isLoading,
-                        onPressed: _onRegister,
+                        isEnabled: _isFormFilled && !isLoading,
+                        onPressed: _isFormFilled ? _onRegister : null,
                       ),
                       const SizedBox(height: AppSpacing.lg),
 
