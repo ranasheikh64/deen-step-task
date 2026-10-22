@@ -28,11 +28,14 @@ class AppColors {
   static const Color surfaceLight = Color(0xFFFFFFFF);
   static const Color card = Color(0xFF19241F);
   static const Color cardLight = Color(0xFFFFFFFF);
-  static const Color inputBackground = Color(0xFF161F1A);
+  static const Color inputBackground = Color(0xFF1A1A1A);
   static const Color inputBackgroundLight = Color(0xFFF3F4F6);
+  static const Color inputBorder = Color(0xFF2C2E2D);
+  static const Color inputFocusedBorder = Color(0xFFB9EB42);
+  static const Color inputHint = Color(0xFF6B7280);
 
   // Borders & Dividers
-  static const Color border = Color(0xFF27362E);
+  static const Color border = Color(0xFF2C2E2D);
   static const Color borderLight = Color(0xFFE5E7EB);
   static const Color divider = Color(0xFF1F2B24);
 

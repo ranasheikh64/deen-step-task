@@ -31,6 +31,37 @@ class AppTypography {
     color: color ?? AppColors.buttonText,
   );
 
+  // Input Field Typography (Figma: TitleSmall - Poppins Regular 14, tracking 0.2px)
+  static TextStyle inputText({Color? color}) => GoogleFonts.poppins(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+    letterSpacing: 0.2,
+    color: color ?? AppColors.textPrimary,
+  );
+
+  static TextStyle inputHint({Color? color}) => GoogleFonts.poppins(
+    fontSize: 14,
+    fontWeight: FontWeight.w400,
+    height: 1.4,
+    letterSpacing: 0.2,
+    color: color ?? AppColors.inputHint,
+  );
+
+  static TextStyle inputLabel({Color? color}) => GoogleFonts.poppins(
+    fontSize: 14,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    letterSpacing: 0.2,
+    color: color ?? AppColors.textPrimary,
+  );
+
+  static TextStyle inputError({Color? color}) => GoogleFonts.poppins(
+    fontSize: 12,
+    fontWeight: FontWeight.w400,
+    color: color ?? AppColors.error,
+  );
+
   // General Text Styles
   static TextStyle displayLarge({Color? color}) => GoogleFonts.poppins(
     fontSize: 32,
