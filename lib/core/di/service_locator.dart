@@ -1,4 +1,5 @@
 import 'package:deen_app/core/network/dio_client.dart';
+import 'package:deen_app/core/services/notifications/push_notification_service.dart';
 import 'package:deen_app/core/services/storage/secure_storage_service.dart';
 import 'package:deen_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:deen_app/features/auth/data/repositories/auth_repository_impl.dart';
@@ -16,6 +17,9 @@ final GetIt sl = GetIt.instance;
 Future<void> initServiceLocator() async {
   // Services
   sl.registerLazySingleton<SecureStorageService>(SecureStorageService.new);
+  sl.registerLazySingleton<PushNotificationService>(
+    () => PushNotificationService(secureStorage: sl<SecureStorageService>()),
+  );
 
   // Network
   sl.registerLazySingleton<DioClient>(
@@ -30,6 +34,7 @@ Future<void> initServiceLocator() async {
     () => AuthRepositoryImpl(
       remoteDataSource: sl<AuthRemoteDataSource>(),
       secureStorage: sl<SecureStorageService>(),
+      pushNotificationService: sl<PushNotificationService>(),
     ),
   );
 

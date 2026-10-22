@@ -35,6 +35,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   final DioClient client;
 
+  String _validDeviceId(String? id) =>
+      (id != null && id.isNotEmpty) ? id : 'dev_${DateTime.now().millisecondsSinceEpoch}';
+
   @override
   Future<AuthResponseModel> login({
     required String email,
@@ -43,7 +46,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }) async {
     final response = await client.post<Map<String, dynamic>>(
       ApiEndpoints.login,
-      data: {'email': email, 'password': password, 'device_id': deviceId},
+      data: {'email': email, 'password': password, 'device_id': _validDeviceId(deviceId)},
     );
     return AuthResponseModel.fromJson(response.data!);
   }
@@ -76,7 +79,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }) async {
     final response = await client.post<Map<String, dynamic>>(
       ApiEndpoints.signUpVerify,
-      data: {'email': email, 'otp': otp, 'device_id': deviceId},
+      data: {'email': email, 'otp': otp, 'device_id': _validDeviceId(deviceId)},
     );
     return AuthResponseModel.fromJson(response.data!);
   }
@@ -95,7 +98,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthResponseModel> guestLogin({required String deviceId}) async {
     final response = await client.post<Map<String, dynamic>>(
       ApiEndpoints.guestLogin,
-      data: {'device_id': deviceId},
+      data: {'device_id': _validDeviceId(deviceId)},
     );
     return AuthResponseModel.fromJson(response.data!);
   }

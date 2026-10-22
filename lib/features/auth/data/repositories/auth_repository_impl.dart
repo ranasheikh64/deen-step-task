@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:deen_app/core/error/failures.dart';
+import 'package:deen_app/core/services/notifications/push_notification_service.dart';
 import 'package:deen_app/core/services/storage/secure_storage_service.dart';
 import 'package:deen_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:deen_app/features/auth/data/repositories/auth_failure_mapper.dart';
@@ -11,10 +12,15 @@ class AuthRepositoryImpl implements AuthRepository {
   const AuthRepositoryImpl({
     required this.remoteDataSource,
     required this.secureStorage,
+    this.pushNotificationService,
   });
 
   final AuthRemoteDataSource remoteDataSource;
   final SecureStorageService secureStorage;
+  final PushNotificationService? pushNotificationService;
+
+  Future<String> _resolveId(String? id) async =>
+      (id != null && id.isNotEmpty) ? id : (await pushNotificationService?.getDeviceId() ?? '');
 
   @override
   Future<Either<Failure, AuthResultEntity>> login({
@@ -26,7 +32,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final res = await remoteDataSource.login(
         email: email,
         password: password,
-        deviceId: deviceId,
+        deviceId: await _resolveId(deviceId),
       );
       await _save(res.accessToken, res.refreshToken);
       return res;
@@ -60,7 +66,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final res = await remoteDataSource.verifyOtp(
         email: email,
         otp: otp,
-        deviceId: deviceId,
+        deviceId: await _resolveId(deviceId),
       );
       await _save(res.accessToken, res.refreshToken);
       return res;
@@ -77,7 +83,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required String deviceId,
   }) {
     return _catch(() async {
-      final res = await remoteDataSource.guestLogin(deviceId: deviceId);
+      final res = await remoteDataSource.guestLogin(
+        deviceId: await _resolveId(deviceId),
+      );
       await _save(res.accessToken, res.refreshToken);
       return res;
     });
