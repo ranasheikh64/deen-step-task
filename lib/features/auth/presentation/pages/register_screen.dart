@@ -5,6 +5,7 @@ import 'package:deen_app/core/theme/app_typography.dart';
 import 'package:deen_app/core/utils/validators.dart';
 import 'package:deen_app/core/widgets/deen_back_button.dart';
 import 'package:deen_app/core/widgets/deen_button.dart';
+import 'package:deen_app/core/widgets/deen_snackbar.dart';
 import 'package:deen_app/core/widgets/deen_text_field.dart';
 import 'package:deen_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:deen_app/features/auth/presentation/bloc/auth_event.dart';
@@ -42,11 +43,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _onRegister() {
     if (!_agreedToTerms) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please agree to the Privacy Policy and Terms'),
-          backgroundColor: AppColors.warning,
-        ),
+      DeenSnackBar.showWarning(
+        context,
+        'Please agree to the Privacy Policy and Terms',
       );
       return;
     }
@@ -75,12 +74,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             if (state is AuthRequiresVerification) {
               context.push(AppRoutes.otpVerification, extra: state.email);
             } else if (state is AuthFailureState) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage),
-                  backgroundColor: AppColors.error,
-                ),
-              );
+              DeenSnackBar.showError(context, state.errorMessage);
             }
           },
           builder: (context, state) {

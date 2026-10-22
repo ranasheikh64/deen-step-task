@@ -32,3 +32,8 @@
   - Disabled
   - Loading state with spinner
   - Error and Empty fallbacks
+
+## 5. Global Snackbar Standard
+- Always use `DeenSnackBar.show(context, message: ...)` or convenience helpers (`DeenSnackBar.showError`, `DeenSnackBar.showSuccess`, `DeenSnackBar.showWarning`).
+- Never use raw `ScaffoldMessenger.of(context).showSnackBar` directly with unstyled default `SnackBar`.
+- Snackbars must strictly be text-based, floating, and displayed at the bottom of the screen.

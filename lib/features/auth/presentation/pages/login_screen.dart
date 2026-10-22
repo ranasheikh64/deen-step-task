@@ -5,6 +5,7 @@ import 'package:deen_app/core/theme/app_typography.dart';
 import 'package:deen_app/core/utils/validators.dart';
 import 'package:deen_app/core/widgets/deen_back_button.dart';
 import 'package:deen_app/core/widgets/deen_button.dart';
+import 'package:deen_app/core/widgets/deen_snackbar.dart';
 import 'package:deen_app/core/widgets/deen_text_field.dart';
 import 'package:deen_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:deen_app/features/auth/presentation/bloc/auth_event.dart';
@@ -56,12 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
             if (state is AuthSuccess) {
               context.go(AppRoutes.dashboard);
             } else if (state is AuthFailureState) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.errorMessage),
-                  backgroundColor: AppColors.error,
-                ),
-              );
+              DeenSnackBar.showError(context, state.errorMessage);
             }
           },
           builder: (context, state) {
