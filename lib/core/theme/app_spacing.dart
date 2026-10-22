@@ -40,12 +40,23 @@ class AppSpacing {
     Radius.circular(radiusFull),
   );
 
-  // Elevation / Shadows
-  static const List<BoxShadow> cardShadow = [
-    BoxShadow(color: Color(0x0A000000), blurRadius: 10, offset: Offset(0, 4)),
+  // Button Shadows matching Figma design tokens
+  static const List<BoxShadow> buttonShadow = [
+    BoxShadow(
+      color: Color(0x1A000000),
+      offset: Offset(0, 10),
+      blurRadius: 15,
+      spreadRadius: -3,
+    ),
+    BoxShadow(
+      color: Color(0x1A000000),
+      offset: Offset(0, 4),
+      blurRadius: 6,
+      spreadRadius: -4,
+    ),
   ];
 
-  static const List<BoxShadow> floatingShadow = [
-    BoxShadow(color: Color(0x14000000), blurRadius: 20, offset: Offset(0, 8)),
+  static const List<BoxShadow> cardShadow = [
+    BoxShadow(color: Color(0x14000000), blurRadius: 10, offset: Offset(0, 4)),
   ];
 }

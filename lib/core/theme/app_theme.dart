@@ -7,68 +7,58 @@ import 'package:flutter/material.dart';
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData get lightTheme {
+  static ThemeData get darkTheme {
     return ThemeData(
       useMaterial3: true,
+      brightness: Brightness.dark,
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.backgroundLight,
-      colorScheme: const ColorScheme.light(
+      scaffoldBackgroundColor: AppColors.background,
+      colorScheme: const ColorScheme.dark(
         primary: AppColors.primary,
-        secondary: AppColors.accent,
+        secondary: AppColors.primaryDark,
+        surface: AppColors.surface,
         error: AppColors.error,
+        onPrimary: AppColors.buttonText,
+        onSurface: AppColors.textPrimary,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.surfaceLight,
-        foregroundColor: AppColors.textPrimaryLight,
-        centerTitle: true,
-        titleTextStyle: AppTypography.titleLarge(
-          color: AppColors.textPrimaryLight,
-        ),
+        backgroundColor: AppColors.surface,
+        foregroundColor: AppColors.textPrimary,
+        titleTextStyle: AppTypography.titleLarge(color: AppColors.textPrimary),
       ),
       cardTheme: const CardThemeData(
-        color: AppColors.cardLight,
+        color: AppColors.card,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppSpacing.roundedMd,
-          side: BorderSide(color: AppColors.borderLight),
+          side: BorderSide(color: AppColors.border),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
-          minimumSize: const Size.fromHeight(52),
+          backgroundColor: AppColors.buttonPrimary,
+          foregroundColor: AppColors.buttonText,
+          minimumSize: const Size.fromHeight(54),
           shape: const RoundedRectangleBorder(
-            borderRadius: AppSpacing.roundedMd,
+            borderRadius: AppSpacing.roundedLg,
           ),
-          textStyle: AppTypography.labelLarge(color: Colors.white),
-        ),
-      ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primary,
-          minimumSize: const Size.fromHeight(52),
-          side: const BorderSide(color: AppColors.primary),
-          shape: const RoundedRectangleBorder(
-            borderRadius: AppSpacing.roundedMd,
-          ),
-          textStyle: AppTypography.labelLarge(color: AppColors.primary),
+          textStyle: AppTypography.buttonLarge(),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.surfaceLight,
+        fillColor: AppColors.inputBackground,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.md,
         ),
         border: const OutlineInputBorder(
           borderRadius: AppSpacing.roundedMd,
-          borderSide: BorderSide(color: AppColors.borderLight),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         enabledBorder: const OutlineInputBorder(
           borderRadius: AppSpacing.roundedMd,
-          borderSide: BorderSide(color: AppColors.borderLight),
+          borderSide: BorderSide(color: AppColors.border),
         ),
         focusedBorder: const OutlineInputBorder(
           borderRadius: AppSpacing.roundedMd,
@@ -78,25 +68,26 @@ class AppTheme {
           borderRadius: AppSpacing.roundedMd,
           borderSide: BorderSide(color: AppColors.error),
         ),
-        hintStyle: AppTypography.bodyMedium(color: AppColors.textTertiaryLight),
+        hintStyle: AppTypography.bodyMedium(color: AppColors.textTertiary),
       ),
     );
   }
 
-  static ThemeData get darkTheme {
+  static ThemeData get lightTheme {
     return ThemeData(
       useMaterial3: true,
-      brightness: Brightness.dark,
-      primaryColor: AppColors.primaryLight,
-      scaffoldBackgroundColor: AppColors.backgroundDark,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.primaryLight,
-        secondary: AppColors.accent,
-        surface: AppColors.surfaceDark,
+      primaryColor: AppColors.primary,
+      scaffoldBackgroundColor: AppColors.backgroundLight,
+      colorScheme: const ColorScheme.light(
+        primary: AppColors.primary,
+        secondary: AppColors.primaryDark,
+        surface: AppColors.surfaceLight,
         error: AppColors.error,
+        onPrimary: AppColors.buttonText,
+        onSurface: AppColors.textPrimaryDark,
       ),
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.surfaceDark,
+        backgroundColor: AppColors.surfaceLight,
         foregroundColor: AppColors.textPrimaryDark,
         centerTitle: true,
         titleTextStyle: AppTypography.titleLarge(
@@ -104,11 +95,11 @@ class AppTheme {
         ),
       ),
       cardTheme: const CardThemeData(
-        color: AppColors.cardDark,
+        color: AppColors.cardLight,
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: AppSpacing.roundedMd,
-          side: BorderSide(color: AppColors.borderDark),
+          side: BorderSide(color: AppColors.borderLight),
         ),
       ),
     );

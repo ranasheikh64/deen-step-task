@@ -1,48 +1,53 @@
 import 'package:flutter/material.dart';
 
-/// Semantic color palette for Deen App
+/// Single source of truth for all application colors.
+/// All colors must be declared here — no hardcoded colors allowed in widgets.
 class AppColors {
   const AppColors._();
 
-  // Primary Islamic Emerald Palette
-  static const Color primary = Color(0xFF104A36);
-  static const Color primaryLight = Color(0xFF1B6A4E);
-  static const Color primaryDark = Color(0xFF093123);
-  static const Color primarySurface = Color(0xFFEAF5EF);
+  // Primary Lime/Neon Accent (Figma: Secondary/300 #B9EB42)
+  static const Color primary = Color(0xFFB9EB42);
+  static const Color primaryLight = Color(0xFFD4F772);
+  static const Color primaryDark = Color(0xFF9CCE2B);
+  static const Color primarySurface = Color(0x1FB9EB42);
 
-  // Accent Gold Palette
-  static const Color accent = Color(0xFFD4AF37);
-  static const Color accentLight = Color(0xFFF0DA8A);
-  static const Color accentDark = Color(0xFF9E7C1B);
+  // Button Colors
+  static const Color buttonPrimary = Color(0xFFB9EB42);
+  static const Color buttonText = Color(0xFF111827);
+  static const Color buttonDisabled = Color(0xFF273824);
+  static const Color buttonDisabledText = Color(0xFF6B7280);
+  static const Color buttonBorder = Color(0xFFB9EB42);
 
-  // Background & Surface (Light)
-  static const Color backgroundLight = Color(0xFFF8F9FA);
+  // Background & Surface (Theme-aware dark first)
+  static const Color background = Color(0xFF0C100E);
+  static const Color backgroundLight = Color(0xFFF9FAFB);
+  static const Color surface = Color(0xFF141C18);
   static const Color surfaceLight = Color(0xFFFFFFFF);
+  static const Color card = Color(0xFF19241F);
   static const Color cardLight = Color(0xFFFFFFFF);
-  static const Color borderLight = Color(0xFFE5E7EB);
+  static const Color inputBackground = Color(0xFF161F1A);
+  static const Color inputBackgroundLight = Color(0xFFF3F4F6);
 
-  // Background & Surface (Dark)
-  static const Color backgroundDark = Color(0xFF0F1713);
-  static const Color surfaceDark = Color(0xFF16231D);
-  static const Color cardDark = Color(0xFF1C2D25);
-  static const Color borderDark = Color(0xFF263830);
+  // Borders & Dividers
+  static const Color border = Color(0xFF27362E);
+  static const Color borderLight = Color(0xFFE5E7EB);
+  static const Color divider = Color(0xFF1F2B24);
 
   // Text Colors
-  static const Color textPrimaryLight = Color(0xFF111827);
-  static const Color textSecondaryLight = Color(0xFF6B7280);
-  static const Color textTertiaryLight = Color(0xFF9CA3AF);
+  static const Color textPrimary = Color(0xFFFFFFFF);
+  static const Color textPrimaryDark = Color(0xFF111827);
+  static const Color textSecondary = Color(0xFF9CA3AF);
+  static const Color textTertiary = Color(0xFF6B7280);
+  static const Color textMuted = Color(0xFF4B5563);
 
-  static const Color textPrimaryDark = Color(0xFFF9FAFB);
-  static const Color textSecondaryDark = Color(0xFF9CA3AF);
-  static const Color textTertiaryDark = Color(0xFF6B7280);
-
-  // Status & Utility Colors
-  static const Color success = Color(0xFF16A34A);
+  // Status & Feedback Colors
+  static const Color success = Color(0xFF10B981);
   static const Color warning = Color(0xFFF59E0B);
-  static const Color error = Color(0xFFDC2626);
-  static const Color info = Color(0xFF2563EB);
+  static const Color error = Color(0xFFEF4444);
+  static const Color info = Color(0xFF3B82F6);
 
-  // Shimmer / Placeholder
-  static const Color shimmerBase = Color(0xFFE0E0E0);
-  static const Color shimmerHighlight = Color(0xFFF5F5F5);
+  // Overlay & Shadows
+  static const Color shadow = Color(0x1A000000);
+  static const Color overlay = Color(0x80000000);
+  static const Color transparent = Colors.transparent;
 }
