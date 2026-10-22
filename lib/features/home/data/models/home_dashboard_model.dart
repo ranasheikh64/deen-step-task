@@ -40,14 +40,25 @@ class HomeDashboardModel extends HomeDashboardEntity {
     final reflection = data['ai_reflection'] as Map<String, dynamic>? ?? {};
     final verse = data['abundance_verse'] as Map<String, dynamic>? ?? {};
 
-    final hijriStr = '${hijri['day'] ?? ''} ${hijri['month_en'] ?? ''}, ${hijri['year'] ?? ''} H'.trim();
-    final gregStr = '${greg['weekday_en'] ?? ''}, ${greg['date'] ?? ''}'.trim();
+    final hijriDay = hijri['day'];
+    final hijriMonth = hijri['month_en'];
+    final hijriYear = hijri['year'];
+    final hijriStr = (hijriDay != null && hijriMonth != null && hijriYear != null)
+        ? '$hijriDay $hijriMonth, $hijriYear H'
+        : (hijri['date'] as String? ?? '');
+
+    final gregWeekday = greg['weekday_en'];
+    final gregDate = greg['date'];
+    final gregStr = (gregWeekday != null && gregDate != null)
+        ? '$gregWeekday, $gregDate'
+        : (gregDate as String? ?? '');
 
     return HomeDashboardModel(
       location: UserLocationModel.fromJson(locJson),
-      hijriDate: hijriStr.isNotEmpty ? hijriStr : (hijri['date'] as String? ?? ''),
-      gregorianDate: gregStr.isNotEmpty ? gregStr : (greg['date'] as String? ?? ''),
+      hijriDate: hijriStr,
+      gregorianDate: gregStr,
       timings: timingsMap,
+
       nextPrayerName: nextP['name'] as String? ?? '',
       nextPrayerTime: nextP['at'] as String? ?? '',
       nextPrayerSecondsUntil: nextP['seconds_until'] as int? ?? 0,

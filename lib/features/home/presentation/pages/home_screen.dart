@@ -10,12 +10,12 @@ import 'package:deen_app/features/home/presentation/widgets/home_ai_reflection_c
 import 'package:deen_app/features/home/presentation/widgets/home_prayer_header_widget.dart';
 import 'package:deen_app/features/home/presentation/widgets/home_prayer_tracker_card.dart';
 import 'package:deen_app/features/home/presentation/widgets/home_quick_actions_grid.dart';
-import 'package:deen_app/features/home/presentation/widgets/home_screen_fallback.dart';
+import 'package:deen_app/features/home/presentation/widgets/home_screen_shimmer.dart';
 import 'package:deen_app/features/home/presentation/widgets/home_stats_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Home Screen matching Figma node 1:1335 with live API data and location dialog
+/// Home Screen with live API data, real-time clock, and shimmer loading state
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, this.homeBloc});
 
@@ -24,11 +24,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (homeBloc == null && !sl.isRegistered<HomeBloc>()) {
-      return const HomeScreenFallback();
+      return const HomeScreenShimmer();
     }
     return BlocProvider(
-      create: (context) =>
-          (homeBloc ?? sl<HomeBloc>())..add(const HomeDashboardRequested()),
+      create: (context) => (homeBloc ?? sl<HomeBloc>())..add(const HomeDashboardRequested()),
       child: const _HomeScreenContent(),
     );
   }
@@ -52,10 +51,13 @@ class _HomeScreenContent extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          final d = state is HomeLoaded ? state.dashboard : null;
-          final cd = d != null && d.nextPrayerName.isNotEmpty
-              ? '${d.nextPrayerName} in ${d.nextPrayerSecondsUntil ~/ 3600}h ${(d.nextPrayerSecondsUntil % 3600) ~/ 60}m left'
-              : 'Maghrib in 0h 29m 3s left';
+          if (state is HomeLoading || state is HomeInitial) return const HomeScreenShimmer();
+          if (state is! HomeLoaded) return const SizedBox.shrink();
+
+          final d = state.dashboard;
+          final loc = d.location.address.isNotEmpty
+              ? d.location.address
+              : (d.location.city.isNotEmpty ? d.location.city : '');
 
           return RefreshIndicator(
             color: AppColors.primary,
@@ -65,38 +67,41 @@ class _HomeScreenContent extends StatelessWidget {
               child: Column(
                 children: [
                   HomePrayerHeaderWidget(
-                    location: d?.location.address.isNotEmpty == true ? d!.location.address : 'Gulshan, Dhaka',
-                    hijriDate: d?.hijriDate.isNotEmpty == true ? d!.hijriDate : '3 Jumada Al-Awwal, 1447 H',
-                    gregorianDate: d?.gregorianDate.isNotEmpty == true ? d!.gregorianDate : 'Sat, 25 Oct 2025',
-                    countdownText: cd,
+                    location: loc,
+                    hijriDate: d.hijriDate,
+                    gregorianDate: d.gregorianDate,
+                    nextPrayerName: d.nextPrayerName,
+                    nextPrayerTime: d.nextPrayerTime,
+                    timings: d.timings,
+                    activePrayer: d.nextPrayerName,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                     child: Column(
                       children: [
                         const SizedBox(height: AppSpacing.md),
-                        const HomePrayerTrackerCard(),
+                        HomePrayerTrackerCard(
+                          prayerName: d.nextPrayerName,
+                          trackedCount: d.dailyGoalCompleted,
+                          totalCount: d.dailyGoalTarget,
+                        ),
                         const SizedBox(height: AppSpacing.md),
                         HomeStatsRowWidget(
-                          completedPrayers: d?.dailyGoalCompleted ?? 0,
-                          totalPrayers: d?.dailyGoalTarget ?? 5,
-                          streakDays: d?.streakCurrent ?? 0,
+                          completedPrayers: d.dailyGoalCompleted,
+                          totalPrayers: d.dailyGoalTarget,
+                          streakDays: d.streakCurrent,
                         ),
-                        const SizedBox(height: AppSpacing.md),
-                        HomeAiReflectionCard(
-                          message: d?.aiReflection.isNotEmpty == true
-                              ? d!.aiReflection
-                              : 'Assalamu alaikum! Welcome to your space for spiritual growth.',
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        HomeAbundanceVerseCard(
-                          source: d?.abundanceVerseReference.isNotEmpty == true
-                              ? d!.abundanceVerseReference
-                              : 'Sahih al-Bukhari, 6412',
-                          verse: d?.abundanceVerseTranslation.isNotEmpty == true
-                              ? d!.abundanceVerseTranslation
-                              : 'Start your daily verse by input them in reflections.',
-                        ),
+                        if (d.aiReflection.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          HomeAiReflectionCard(message: d.aiReflection),
+                        ],
+                        if (d.abundanceVerseTranslation.isNotEmpty) ...[
+                          const SizedBox(height: AppSpacing.md),
+                          HomeAbundanceVerseCard(
+                            source: d.abundanceVerseReference,
+                            verse: d.abundanceVerseTranslation,
+                          ),
+                        ],
                         const SizedBox(height: AppSpacing.md),
                         const HomeQuickActionsGrid(),
                         const SizedBox(height: AppSpacing.xxxl),

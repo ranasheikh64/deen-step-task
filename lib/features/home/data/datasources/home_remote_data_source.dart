@@ -7,6 +7,10 @@ import 'package:deen_app/features/home/data/models/user_location_model.dart';
 abstract class HomeRemoteDataSource {
   Future<HomeDashboardModel> getHomeDashboard();
   Future<UserLocationModel> getCurrentLocation();
+  Future<UserLocationModel> updateLocation({
+    required String latitude,
+    required String longitude,
+  });
 }
 
 /// Implementation using centralized DioClient
@@ -27,6 +31,21 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
   Future<UserLocationModel> getCurrentLocation() async {
     final response = await client.get<Map<String, dynamic>>(
       ApiEndpoints.userCurrentLocation,
+    );
+    final data = response.data?['data'] as Map<String, dynamic>? ??
+        response.data ??
+        {};
+    return UserLocationModel.fromJson(data);
+  }
+
+  @override
+  Future<UserLocationModel> updateLocation({
+    required String latitude,
+    required String longitude,
+  }) async {
+    final response = await client.patch<Map<String, dynamic>>(
+      ApiEndpoints.userLocationUpdate,
+      data: {'latitude': latitude, 'longitude': longitude},
     );
     final data = response.data?['data'] as Map<String, dynamic>? ??
         response.data ??

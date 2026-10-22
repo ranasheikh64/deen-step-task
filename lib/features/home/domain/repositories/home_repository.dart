@@ -7,4 +7,8 @@ import 'package:deen_app/features/home/domain/entities/user_location_entity.dart
 abstract class HomeRepository {
   Future<Either<Failure, HomeDashboardEntity>> getHomeDashboard();
   Future<Either<Failure, UserLocationEntity>> getCurrentLocation();
+  Future<Either<Failure, UserLocationEntity>> updateLocation({
+    required String latitude,
+    required String longitude,
+  });
 }

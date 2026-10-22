@@ -19,7 +19,20 @@ class HomeRepositoryImpl implements HomeRepository {
   Future<Either<Failure, UserLocationEntity>> getCurrentLocation() =>
       _catch(remoteDataSource.getCurrentLocation);
 
+  @override
+  Future<Either<Failure, UserLocationEntity>> updateLocation({
+    required String latitude,
+    required String longitude,
+  }) =>
+      _catch(
+        () => remoteDataSource.updateLocation(
+          latitude: latitude,
+          longitude: longitude,
+        ),
+      );
+
   Future<Either<Failure, T>> _catch<T>(Future<T> Function() fn) async {
+
     try {
       return Right(await fn());
     } on Exception catch (e) {
