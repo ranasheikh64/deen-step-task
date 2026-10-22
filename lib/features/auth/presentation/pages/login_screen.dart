@@ -17,7 +17,9 @@ import 'package:go_router/go_router.dart';
 
 /// Login Screen matching Figma node 1:886
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.authBloc});
+
+  final AuthBloc? authBloc;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -27,6 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final AuthBloc _authBloc;
 
   bool get _isFormFilled =>
       _emailController.text.trim().isNotEmpty &&
@@ -35,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    _authBloc = widget.authBloc ?? AuthBloc();
     _emailController.addListener(_onFieldChanged);
     _passwordController.addListener(_onFieldChanged);
   }
@@ -49,6 +53,9 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.removeListener(_onFieldChanged);
     _emailController.dispose();
     _passwordController.dispose();
+    if (widget.authBloc == null) {
+      _authBloc.close();
+    }
     super.dispose();
   }
 
@@ -56,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!_isFormFilled) return;
 
     if (_formKey.currentState?.validate() ?? false) {
-      context.read<AuthBloc>().add(
+      _authBloc.add(
         AuthLoginSubmitted(
           email: _emailController.text.trim(),
           password: _passwordController.text,
@@ -67,8 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthBloc(),
+    return BlocProvider.value(
+      value: _authBloc,
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocConsumer<AuthBloc, AuthState>(
@@ -186,10 +193,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       // 8. Social Login Section
                       SocialAuthButtons(
                         label: 'Log In With',
-                        onGoogleTap: () => context.read<AuthBloc>().add(
+                        onGoogleTap: () => _authBloc.add(
                           const AuthGoogleSignInRequested(),
                         ),
-                        onAppleTap: () => context.read<AuthBloc>().add(
+                        onAppleTap: () => _authBloc.add(
                           const AuthAppleSignInRequested(),
                         ),
                       ),

@@ -19,7 +19,9 @@ import 'package:go_router/go_router.dart';
 
 /// Registration / Create Account Screen matching Figma node 1:760
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+  const RegisterScreen({super.key, this.authBloc});
+
+  final AuthBloc? authBloc;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -31,6 +33,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  late final AuthBloc _authBloc;
   bool _agreedToTerms = false;
 
   bool get _isFormFilled =>
@@ -43,6 +46,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void initState() {
     super.initState();
+    _authBloc = widget.authBloc ?? AuthBloc();
     _nameController.addListener(_onFieldChanged);
     _emailController.addListener(_onFieldChanged);
     _passwordController.addListener(_onFieldChanged);
@@ -63,6 +67,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    if (widget.authBloc == null) {
+      _authBloc.close();
+    }
     super.dispose();
   }
 
@@ -70,7 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (!_isFormFilled) return;
 
     if (_formKey.currentState?.validate() ?? false) {
-      context.read<AuthBloc>().add(
+      _authBloc.add(
         AuthRegisterSubmitted(
           fullName: _nameController.text.trim(),
           email: _emailController.text.trim(),
@@ -84,8 +91,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AuthBloc(),
+    return BlocProvider.value(
+      value: _authBloc,
       child: Scaffold(
         backgroundColor: AppColors.background,
         body: BlocConsumer<AuthBloc, AuthState>(
@@ -280,10 +287,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // 10. Social Login Section
                       SocialAuthButtons(
                         label: 'Log In With',
-                        onGoogleTap: () => context.read<AuthBloc>().add(
+                        onGoogleTap: () => _authBloc.add(
                           const AuthGoogleSignInRequested(),
                         ),
-                        onAppleTap: () => context.read<AuthBloc>().add(
+                        onAppleTap: () => _authBloc.add(
                           const AuthAppleSignInRequested(),
                         ),
                       ),
