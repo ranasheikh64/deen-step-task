@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 /// Custom TextField component matching Figma design specifications (node 1:859).
-/// Supports enabled/disabled states, validators, prefix/suffix icons,
-/// and password visibility toggling without any hardcoded colors or styles.
+/// Features dynamic label visibility: the label above the field is displayed
+/// ONLY when the field is active (has focus or contains text).
+/// Otherwise, clean hint text is displayed inside the input.
 class DeenTextField extends StatefulWidget {
   const DeenTextField({
     super.key,
@@ -29,6 +30,7 @@ class DeenTextField extends StatefulWidget {
     this.maxLines = 1,
     this.autofocus = false,
     this.inputFormatters,
+    this.dynamicLabel = true,
   });
 
   final TextEditingController? controller;
@@ -50,6 +52,7 @@ class DeenTextField extends StatefulWidget {
   final int maxLines;
   final bool autofocus;
   final List<TextInputFormatter>? inputFormatters;
+  final bool dynamicLabel;
 
   @override
   State<DeenTextField> createState() => _DeenTextFieldState();
@@ -57,11 +60,53 @@ class DeenTextField extends StatefulWidget {
 
 class _DeenTextFieldState extends State<DeenTextField> {
   late bool _obscured;
+  FocusNode? _internalFocusNode;
+  TextEditingController? _internalController;
+
+  FocusNode get _effectiveFocusNode =>
+      widget.focusNode ?? (_internalFocusNode ??= FocusNode());
+
+  TextEditingController get _effectiveController =>
+      widget.controller ?? (_internalController ??= TextEditingController());
 
   @override
   void initState() {
     super.initState();
     _obscured = widget.isPassword || widget.obscureText;
+    _effectiveFocusNode.addListener(_onFocusOrTextChanged);
+    _effectiveController.addListener(_onFocusOrTextChanged);
+  }
+
+  @override
+  void didUpdateWidget(DeenTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.focusNode != widget.focusNode) {
+      (oldWidget.focusNode ?? _internalFocusNode)?.removeListener(
+        _onFocusOrTextChanged,
+      );
+      _effectiveFocusNode.addListener(_onFocusOrTextChanged);
+    }
+    if (oldWidget.controller != widget.controller) {
+      (oldWidget.controller ?? _internalController)?.removeListener(
+        _onFocusOrTextChanged,
+      );
+      _effectiveController.addListener(_onFocusOrTextChanged);
+    }
+  }
+
+  void _onFocusOrTextChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  @override
+  void dispose() {
+    _effectiveFocusNode.removeListener(_onFocusOrTextChanged);
+    _effectiveController.removeListener(_onFocusOrTextChanged);
+    _internalFocusNode?.dispose();
+    _internalController?.dispose();
+    super.dispose();
   }
 
   void _toggleObscurity() {
@@ -72,17 +117,34 @@ class _DeenTextFieldState extends State<DeenTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final hasFocus = _effectiveFocusNode.hasFocus;
+    final hasText = _effectiveController.text.isNotEmpty;
+    final showLabel =
+        widget.labelText != null &&
+        (!widget.dynamicLabel || hasFocus || hasText);
+    final effectiveHint = showLabel
+        ? (widget.hintText ?? widget.labelText)
+        : (widget.labelText ?? widget.hintText);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (widget.labelText != null) ...[
-          Text(widget.labelText!, style: AppTypography.inputLabel()),
-          const SizedBox(height: AppSpacing.sm),
+        // Dynamic Label: Only visible when active (focused or has text)
+        if (showLabel) ...[
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            child: Text(
+              widget.labelText!,
+              style: AppTypography.inputLabel().copyWith(
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
+              ),
+            ),
+          ),
         ],
         TextFormField(
-          controller: widget.controller,
-          initialValue: widget.initialValue,
+          controller: _effectiveController,
           validator: widget.validator,
           onChanged: widget.onChanged,
           onFieldSubmitted: widget.onSubmitted,
@@ -91,7 +153,7 @@ class _DeenTextFieldState extends State<DeenTextField> {
           obscureText: _obscured,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
-          focusNode: widget.focusNode,
+          focusNode: _effectiveFocusNode,
           maxLines: widget.maxLines,
           autofocus: widget.autofocus,
           inputFormatters: widget.inputFormatters,
@@ -105,7 +167,7 @@ class _DeenTextFieldState extends State<DeenTextField> {
             fillColor: widget.enabled
                 ? AppColors.inputBackground
                 : AppColors.inputBackground.withValues(alpha: 0.6),
-            hintText: widget.hintText,
+            hintText: effectiveHint,
             hintStyle: AppTypography.inputHint(),
             errorStyle: AppTypography.inputError(),
             contentPadding: const EdgeInsets.symmetric(

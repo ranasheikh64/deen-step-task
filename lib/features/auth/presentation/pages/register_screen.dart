@@ -5,6 +5,7 @@ import 'package:deen_app/core/theme/app_typography.dart';
 import 'package:deen_app/core/utils/validators.dart';
 import 'package:deen_app/core/widgets/deen_back_button.dart';
 import 'package:deen_app/core/widgets/deen_button.dart';
+import 'package:deen_app/core/widgets/deen_checkbox.dart';
 import 'package:deen_app/core/widgets/deen_snackbar.dart';
 import 'package:deen_app/core/widgets/deen_text_field.dart';
 import 'package:deen_app/features/auth/presentation/bloc/auth_bloc.dart';
@@ -161,23 +162,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: Checkbox(
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: DeenCheckbox(
                               value: _agreedToTerms,
-                              activeColor: AppColors.primary,
-                              checkColor: AppColors.buttonText,
-                              side: const BorderSide(
-                                color: AppColors.border,
-                                width: 1.5,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
                               onChanged: (val) {
                                 setState(() {
-                                  _agreedToTerms = val ?? false;
+                                  _agreedToTerms = val;
                                 });
                               },
                             ),

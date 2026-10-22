@@ -21,6 +21,10 @@ class AppColors {
   static const Color buttonBorder = Color(0xFFB9EB42);
   static const Color starParticle = Color(0xFFF9FAFB);
 
+  // Checkbox Colors (Figma node 1:780)
+  static const Color checkboxWhite = Color(0xFFFFFFFF);
+  static const Color checkboxCheckmark = Color(0xFF111827);
+
   // Background & Surface (Theme-aware dark first)
   static const Color background = Color(0xFF0C100E);
   static const Color backgroundLight = Color(0xFFF9FAFB);

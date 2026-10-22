@@ -1,3 +1,4 @@
+import 'package:deen_app/core/widgets/deen_checkbox.dart';
 import 'package:deen_app/features/auth/presentation/pages/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,7 +16,7 @@ void main() {
       expect(find.text('Password'), findsOneWidget);
       expect(find.text('Confirm Password'), findsOneWidget);
       expect(find.text('Register Account'), findsOneWidget);
-      expect(find.byType(Checkbox), findsOneWidget);
+      expect(find.byType(DeenCheckbox), findsOneWidget);
     });
   });
 }
