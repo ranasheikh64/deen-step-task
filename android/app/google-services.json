@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176098675776",
+    "project_id": "deen-4fbd6",
+    "storage_bucket": "deen-4fbd6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176098675776:android:8c1db050e7471be533e3a5",
+        "android_client_info": {
+          "package_name": "com.deenApp.APP"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBlCLDEzsxlb-TfAfM6fqV4LwLdvElvius"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -29,6 +29,22 @@ void main() {
       expect(AppValidators.password('123456'), isNull);
     });
 
+    test('registrationPassword validator', () {
+      expect(
+        AppValidators.registrationPassword(null),
+        equals('Password is required'),
+      );
+      expect(
+        AppValidators.registrationPassword('123456'),
+        equals('Password must be at least 8 characters'),
+      );
+      expect(
+        AppValidators.registrationPassword('12345678'),
+        equals('Password cannot be entirely numeric'),
+      );
+      expect(AppValidators.registrationPassword('Str0ngPass!'), isNull);
+    });
+
     test('confirmPassword validator', () {
       expect(
         AppValidators.confirmPassword('123', '456'),

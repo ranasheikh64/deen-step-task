@@ -1,4 +1,4 @@
-package com.deenstep.app.deen_app
+package com.deenApp.APP
 
 import io.flutter.embedding.android.FlutterActivity
 

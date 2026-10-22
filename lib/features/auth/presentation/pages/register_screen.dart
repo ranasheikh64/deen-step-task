@@ -164,7 +164,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         hintText: 'Create a password',
                         isPassword: true,
                         textInputAction: TextInputAction.next,
-                        validator: AppValidators.password,
+                        validator: AppValidators.registrationPassword,
                       ),
                       const SizedBox(height: AppSpacing.lg),
 

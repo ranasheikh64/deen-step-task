@@ -18,9 +18,26 @@ ServerException handleDioError(DioException error) {
     final data = error.response!.data as Map<String, dynamic>;
     if (data['error'] is Map<String, dynamic>) {
       final err = data['error'] as Map<String, dynamic>;
-      message = err['message'] as String? ?? message;
       errCode = err['code'] as String?;
       retryAfter = err['retry_after_seconds'] as int?;
+
+      if (err['fields'] is Map<String, dynamic>) {
+        final fields = err['fields'] as Map<String, dynamic>;
+        final fieldErrors = <String>[];
+        for (final entry in fields.entries) {
+          final val = entry.value;
+          if (val is List && val.isNotEmpty) {
+            fieldErrors.add(val.first.toString());
+          } else if (val != null) {
+            fieldErrors.add(val.toString());
+          }
+        }
+        message = fieldErrors.isNotEmpty
+            ? fieldErrors.join('\n')
+            : (err['message'] as String? ?? message);
+      } else {
+        message = err['message'] as String? ?? message;
+      }
     } else {
       message =
           data['message'] as String? ??
