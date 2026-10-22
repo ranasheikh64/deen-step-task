@@ -17,7 +17,7 @@ class AppConfig {
         const AppConfig(
           baseUrl: 'https://test.deenstep.com/api/v1',
           environment: 'production',
-          enableLogging: false,
+          enableLogging: true,
         );
   }
 

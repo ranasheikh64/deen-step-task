@@ -1,11 +1,12 @@
 import 'package:deen_app/core/config/app_config.dart';
 import 'package:deen_app/core/constants/app_constants.dart';
-import 'package:deen_app/core/error/exceptions.dart';
+import 'package:deen_app/core/network/api_logger_interceptor.dart';
+import 'package:deen_app/core/network/dio_error_handler.dart';
 import 'package:deen_app/core/services/storage/secure_storage_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-/// Centralized Dio Network Client with Interceptors
+/// Centralized Dio Network Client with Interceptors and Pretty Logging
 class DioClient {
   DioClient({required this.secureStorage, Dio? dio}) : _dio = dio ?? Dio() {
     _initDio();
@@ -21,7 +22,7 @@ class DioClient {
       baseUrl: AppConfig.instance.baseUrl,
       connectTimeout: AppConstants.connectTimeout,
       receiveTimeout: AppConstants.receiveTimeout,
-      headers: {
+      headers: const {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
@@ -46,14 +47,15 @@ class DioClient {
     );
 
     if (kDebugMode && AppConfig.instance.enableLogging) {
-      _dio.interceptors.add(
-        LogInterceptor(
-          requestBody: true,
-          responseBody: true,
-          requestHeader: false,
-          responseHeader: false,
-        ),
-      );
+      _dio.interceptors.add(const ApiLoggerInterceptor());
+    }
+  }
+
+  Future<Response<T>> _call<T>(Future<Response<T>> Function() req) async {
+    try {
+      return await req();
+    } on DioException catch (e) {
+      throw handleDioError(e);
     }
   }
 
@@ -61,16 +63,11 @@ class DioClient {
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
-  }) async {
-    try {
-      return await _dio.get<T>(
-        path,
-        queryParameters: queryParameters,
-        options: options,
-      );
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
+  }) {
+    return _call(
+      () =>
+          _dio.get<T>(path, queryParameters: queryParameters, options: options),
+    );
   }
 
   Future<Response<T>> post<T>(
@@ -78,17 +75,15 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
-  }) async {
-    try {
-      return await _dio.post<T>(
+  }) {
+    return _call(
+      () => _dio.post<T>(
         path,
         data: data,
         queryParameters: queryParameters,
         options: options,
-      );
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
+      ),
+    );
   }
 
   Future<Response<T>> patch<T>(
@@ -96,17 +91,15 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
-  }) async {
-    try {
-      return await _dio.patch<T>(
+  }) {
+    return _call(
+      () => _dio.patch<T>(
         path,
         data: data,
         queryParameters: queryParameters,
         options: options,
-      );
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
+      ),
+    );
   }
 
   Future<Response<T>> delete<T>(
@@ -114,56 +107,14 @@ class DioClient {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
-  }) async {
-    try {
-      return await _dio.delete<T>(
+  }) {
+    return _call(
+      () => _dio.delete<T>(
         path,
         data: data,
         queryParameters: queryParameters,
         options: options,
-      );
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    }
-  }
-
-  ServerException _handleDioError(DioException error) {
-    var message = 'An unexpected error occurred';
-    final statusCode = error.response?.statusCode;
-    String? errCode;
-    int? retryAfter;
-
-    if (error.type == DioExceptionType.connectionTimeout ||
-        error.type == DioExceptionType.receiveTimeout) {
-      message = 'Connection timed out. Please check your internet.';
-    } else if (error.type == DioExceptionType.connectionError) {
-      message =
-          'Cannot connect to server. Please check your internet connection.';
-    } else if (error.response?.data is Map<String, dynamic>) {
-      final data = error.response!.data as Map<String, dynamic>;
-      if (data['error'] is Map<String, dynamic>) {
-        final err = data['error'] as Map<String, dynamic>;
-        message = err['message'] as String? ?? message;
-        errCode = err['code'] as String?;
-        retryAfter = err['retry_after_seconds'] as int?;
-      } else {
-        message =
-            data['message'] as String? ??
-            data['detail'] as String? ??
-            data['error'] as String? ??
-            'Request failed with status $statusCode';
-      }
-    }
-
-    retryAfter ??= int.tryParse(
-      error.response?.headers.value('retry-after') ?? '',
-    );
-
-    return ServerException(
-      message: message,
-      statusCode: statusCode,
-      code: errCode,
-      retryAfterSeconds: retryAfter,
+      ),
     );
   }
 }
