@@ -1,9 +1,10 @@
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_typography.dart';
+import 'package:deen_app/features/home/presentation/widgets/dotted_circle_painter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-/// Single prayer item for the timeline row.
+/// Single prayer item on the timeline row with centered circle alignment
 class HomePrayerTimelineItem extends StatelessWidget {
   const HomePrayerTimelineItem({
     required this.time,
@@ -20,45 +21,64 @@ class HomePrayerTimelineItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = completed ? AppColors.primary : AppColors.textSecondary;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          time,
-          style: AppTypography.bodySmall(color: AppColors.textSecondary)
-              .copyWith(fontSize: 10),
-        ),
-        const SizedBox(height: 4),
-        Container(
-          width: 38,
-          height: 38,
-          decoration: BoxDecoration(
-            color: completed
-                ? AppColors.prayerCircleDashed
-                : AppColors.prayerCircleInactive,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: completed
-                  ? AppColors.primary
-                  : AppColors.prayerTimelineBorder,
+    return SizedBox(
+      width: 52,
+      height: 94,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Positioned(
+            top: 6,
+            child: Text(
+              time,
+              style: AppTypography.bodySmall(
+                color: completed ? AppColors.textPrimary : AppColors.textSecondary,
+              ).copyWith(fontSize: 10),
             ),
           ),
-          child: Center(
-            child: SvgPicture.asset(
-              icon,
-              width: 18,
-              height: 18,
-              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+          Positioned(
+            top: 27,
+            child: CustomPaint(
+              painter: completed
+                  ? const DottedCirclePainter(color: AppColors.homeTimeLime)
+                  : null,
+              child: Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: completed
+                      ? AppColors.homeTimeLime.withValues(alpha: 0.12)
+                      : AppColors.prayerCircleInactive,
+                  shape: BoxShape.circle,
+                  border: completed
+                      ? null
+                      : Border.all(color: AppColors.prayerTimelineBorder),
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    icon,
+                    width: 18,
+                    height: 18,
+                    colorFilter: ColorFilter.mode(
+                      completed ? AppColors.homeTimeLime : AppColors.textSecondary,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          name,
-          style: AppTypography.bodySmall(color: AppColors.textSecondary),
-        ),
-      ],
+          Positioned(
+            bottom: 6,
+            child: Text(
+              name,
+              style: AppTypography.bodySmall(
+                color: completed ? AppColors.textPrimary : AppColors.textSecondary,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
