@@ -142,7 +142,7 @@ class DeenButton extends StatelessWidget {
       case DeenButtonVariant.primary:
         return AppColors.buttonPrimary;
       case DeenButtonVariant.secondary:
-        return AppColors.card;
+        return AppColors.buttonSecondaryBackground;
       case DeenButtonVariant.outline:
       case DeenButtonVariant.ghost:
         return AppColors.transparent;
@@ -158,6 +158,7 @@ class DeenButton extends StatelessWidget {
       case DeenButtonVariant.primary:
         return AppColors.buttonText;
       case DeenButtonVariant.secondary:
+        return AppColors.buttonSecondaryText;
       case DeenButtonVariant.outline:
       case DeenButtonVariant.ghost:
         return AppColors.textPrimary;

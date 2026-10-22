@@ -14,9 +14,12 @@ class AppColors {
   // Button Colors
   static const Color buttonPrimary = Color(0xFFB9EB42);
   static const Color buttonText = Color(0xFF111827);
+  static const Color buttonSecondaryBackground = Color(0xFF060B09);
+  static const Color buttonSecondaryText = Color(0xFFF9FAFB);
   static const Color buttonDisabled = Color(0xFF273824);
   static const Color buttonDisabledText = Color(0xFF6B7280);
   static const Color buttonBorder = Color(0xFFB9EB42);
+  static const Color starParticle = Color(0xFFF9FAFB);
 
   // Background & Surface (Theme-aware dark first)
   static const Color background = Color(0xFF0C100E);

@@ -1,6 +1,9 @@
+import 'package:deen_app/core/routing/app_router.dart';
+import 'package:deen_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const DeenApp());
 }
 
@@ -10,9 +13,12 @@ class DeenApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp.router(
       title: 'Deen',
-      home: Scaffold(body: Center(child: Text('Deen App Skeleton Ready'))),
+      theme: AppTheme.darkTheme,
+      darkTheme: AppTheme.darkTheme,
+      routerConfig: AppRouter.router,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

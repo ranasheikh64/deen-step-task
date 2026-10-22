@@ -5,6 +5,15 @@ class AssetPaths {
   static const String _iconsBase = 'assets/icons';
   static const String _imagesBase = 'assets/images';
 
+  // Branding & Logo
+  static const String icDeenLogo = '$_iconsBase/ic_deen_logo.svg';
+
+  // Onboarding Background SVGs
+  static const String imgOnboardingBgScreen2 =
+      '$_imagesBase/secount_screen_image.svg';
+  static const String imgOnboardingBgScreen3And4 =
+      '$_imagesBase/3rd_and4th_screen_image.svg';
+
   // Navigation Icons
   static const String icHome = '$_iconsBase/ic_home.svg';
   static const String icPrayer = '$_iconsBase/ic_prayer.svg';
@@ -21,10 +30,4 @@ class AssetPaths {
   static const String icHeart = '$_iconsBase/ic_heart.svg';
   static const String icComment = '$_iconsBase/ic_comment.svg';
   static const String icShare = '$_iconsBase/ic_share.svg';
-
-  // Illustrations / Logos
-  static const String imgLogo = '$_imagesBase/img_logo.png';
-  static const String imgOnboarding1 = '$_imagesBase/img_onboarding_1.png';
-  static const String imgOnboarding2 = '$_imagesBase/img_onboarding_2.png';
-  static const String imgOnboarding3 = '$_imagesBase/img_onboarding_3.png';
 }

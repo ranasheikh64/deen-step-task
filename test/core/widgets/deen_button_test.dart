@@ -8,10 +8,7 @@ void main() {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(
-            body: DeenButton(
-              text: 'Create Account',
-              onPressed: () {},
-            ),
+            body: DeenButton(text: 'Create Account', onPressed: () {}),
           ),
         ),
       );
@@ -61,29 +58,31 @@ void main() {
       expect(tapped, isFalse);
     });
 
-    testWidgets('shows loading indicator when isLoading is true and ignores tap',
-        (tester) async {
-      var tapped = false;
+    testWidgets(
+      'shows loading indicator when isLoading is true and ignores tap',
+      (tester) async {
+        var tapped = false;
 
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: DeenButton(
-              text: 'Create Account',
-              isLoading: true,
-              onPressed: () => tapped = true,
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: DeenButton(
+                text: 'Create Account',
+                isLoading: true,
+                onPressed: () => tapped = true,
+              ),
             ),
           ),
-        ),
-      );
+        );
 
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.text('Create Account'), findsNothing);
+        expect(find.byType(CircularProgressIndicator), findsOneWidget);
+        expect(find.text('Create Account'), findsNothing);
 
-      await tester.tap(find.byType(DeenButton));
-      await tester.pump();
+        await tester.tap(find.byType(DeenButton));
+        await tester.pump();
 
-      expect(tapped, isFalse);
-    });
+        expect(tapped, isFalse);
+      },
+    );
   });
 }
