@@ -24,11 +24,16 @@ class HomeLocationChip extends StatelessWidget {
         children: [
           SvgPicture.asset(AssetPaths.icLocationPin, width: 16, height: 16),
           const SizedBox(width: AppSpacing.xs),
-          Text(
-            location,
-            style: AppTypography.buttonSmall(color: AppColors.textPrimary),
+          Flexible(
+            child: Text(
+              location,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.buttonSmall(color: AppColors.textPrimary),
+            ),
           ),
         ],
+
       ),
     );
   }
