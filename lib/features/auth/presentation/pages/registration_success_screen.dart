@@ -1,3 +1,4 @@
+import 'package:deen_app/core/constants/app_strings.dart';
 import 'package:deen_app/core/constants/asset_paths.dart';
 import 'package:deen_app/core/routing/app_routes.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
@@ -30,7 +31,7 @@ class RegistrationSuccessScreen extends StatelessWidget {
 
               // 2. Heading
               Text(
-                'Registration Successful',
+                AuthStrings.registrationSuccess,
                 textAlign: TextAlign.center,
                 style: AppTypography.headlineLarge(color: AppColors.textPrimary)
                     .copyWith(letterSpacing: 0.3, height: 1.2),
@@ -41,7 +42,7 @@ class RegistrationSuccessScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 child: Text(
-                  'Your account has been created successfully. Welcome to Deen.',
+                  AuthStrings.registrationSuccessMessage,
                   textAlign: TextAlign.center,
                   style: AppTypography.bodyMedium(
                     color: AppColors.textSecondary,
@@ -53,7 +54,7 @@ class RegistrationSuccessScreen extends StatelessWidget {
 
               // 4. Go to Home Button
               DeenButton(
-                text: 'Go to Home',
+                text: AuthStrings.goToHome,
                 onPressed: () => context.go(AppRoutes.dashboard),
               ),
               const SizedBox(height: AppSpacing.xxl),

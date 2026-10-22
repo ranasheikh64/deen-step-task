@@ -1,25 +1,11 @@
-import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_spacing.dart';
 import 'package:deen_app/core/theme/app_typography.dart';
+import 'package:deen_app/core/widgets/deen_snackbar_theme.dart';
 import 'package:flutter/material.dart';
 
-/// Semantic types supported by [DeenSnackBar]
-enum DeenSnackBarType {
-  /// General notification
-  info,
-
-  /// Successful action
-  success,
-
-  /// Failure or validation error
-  error,
-
-  /// Cautionary alert
-  warning,
-}
+export 'package:deen_app/core/widgets/deen_snackbar_theme.dart';
 
 /// Centralized text-based floating bottom snackbar utility.
-/// Provides consistent, pure text-based notifications at the bottom of the screen.
 class DeenSnackBar {
   const DeenSnackBar._();
 
@@ -30,9 +16,9 @@ class DeenSnackBar {
     DeenSnackBarType type = DeenSnackBarType.info,
     Duration duration = const Duration(seconds: 3),
   }) {
-    final backgroundColor = _getBackgroundColor(type);
-    final borderColor = _getBorderColor(type);
-    final textColor = _getTextColor(type);
+    final backgroundColor = DeenSnackBarTheme.getBackgroundColor(type);
+    final borderColor = DeenSnackBarTheme.getBorderColor(type);
+    final textColor = DeenSnackBarTheme.getTextColor(type);
 
     final snackBar = SnackBar(
       behavior: SnackBarBehavior.floating,
@@ -65,7 +51,6 @@ class DeenSnackBar {
       ..showSnackBar(snackBar);
   }
 
-  /// Convenience shortcut for error snackbars
   static void showError(
     BuildContext context,
     String message, {
@@ -79,7 +64,6 @@ class DeenSnackBar {
     );
   }
 
-  /// Convenience shortcut for success snackbars
   static void showSuccess(
     BuildContext context,
     String message, {
@@ -93,7 +77,6 @@ class DeenSnackBar {
     );
   }
 
-  /// Convenience shortcut for warning snackbars
   static void showWarning(
     BuildContext context,
     String message, {
@@ -107,7 +90,6 @@ class DeenSnackBar {
     );
   }
 
-  /// Convenience shortcut for info snackbars
   static void showInfo(
     BuildContext context,
     String message, {
@@ -119,44 +101,5 @@ class DeenSnackBar {
       type: DeenSnackBarType.info,
       duration: duration,
     );
-  }
-
-  static Color _getBackgroundColor(DeenSnackBarType type) {
-    switch (type) {
-      case DeenSnackBarType.error:
-        return const Color(0xFF261214);
-      case DeenSnackBarType.success:
-        return const Color(0xFF142217);
-      case DeenSnackBarType.warning:
-        return const Color(0xFF261D0F);
-      case DeenSnackBarType.info:
-        return AppColors.card;
-    }
-  }
-
-  static Color _getBorderColor(DeenSnackBarType type) {
-    switch (type) {
-      case DeenSnackBarType.error:
-        return AppColors.error;
-      case DeenSnackBarType.success:
-        return AppColors.primary;
-      case DeenSnackBarType.warning:
-        return AppColors.warning;
-      case DeenSnackBarType.info:
-        return AppColors.border;
-    }
-  }
-
-  static Color _getTextColor(DeenSnackBarType type) {
-    switch (type) {
-      case DeenSnackBarType.error:
-        return const Color(0xFFFF8B8B);
-      case DeenSnackBarType.success:
-        return AppColors.primary;
-      case DeenSnackBarType.warning:
-        return const Color(0xFFFFD480);
-      case DeenSnackBarType.info:
-        return AppColors.textPrimary;
-    }
   }
 }

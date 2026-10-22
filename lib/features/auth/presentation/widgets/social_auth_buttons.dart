@@ -1,3 +1,4 @@
+import 'package:deen_app/core/constants/app_strings.dart';
 import 'package:deen_app/core/constants/asset_paths.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_spacing.dart';
@@ -9,7 +10,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class SocialAuthButtons extends StatelessWidget {
   const SocialAuthButtons({
     super.key,
-    this.label = 'Log In With',
+    this.label = AuthStrings.logInWith,
     this.isLoading = false,
     this.onGoogleTap,
     this.onAppleTap,
@@ -30,7 +31,10 @@ class SocialAuthButtons extends StatelessWidget {
             const Expanded(child: Divider(color: AppColors.divider, thickness: 1)),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-              child: Text('OR', style: AppTypography.bodySmall(color: AppColors.textTertiary)),
+              child: Text(
+                AuthStrings.or,
+                style: AppTypography.bodySmall(color: AppColors.textTertiary),
+              ),
             ),
             const Expanded(child: Divider(color: AppColors.divider, thickness: 1)),
           ],

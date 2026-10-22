@@ -1,14 +1,11 @@
-import 'package:deen_app/core/theme/app_colors.dart';
-import 'package:deen_app/core/theme/app_spacing.dart';
-import 'package:deen_app/core/theme/app_typography.dart';
+import 'package:deen_app/core/widgets/deen_text_field_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+export 'package:deen_app/core/widgets/deen_text_field_decoration.dart';
+export 'package:deen_app/core/widgets/deen_text_field_view.dart';
+
 /// Custom TextField component matching Figma design specifications (node 1:859).
-/// Features:
-/// - Dynamic label visibility (only active field shows label above).
-/// - Real-time state validation on keystrokes (`autovalidateMode`).
-/// - Error icon (Icons.error_outline) displayed on the left of validator text.
 class DeenTextField extends StatefulWidget {
   const DeenTextField({
     super.key,
@@ -76,203 +73,31 @@ class _DeenTextFieldState extends State<DeenTextField> {
   void initState() {
     super.initState();
     _obscured = widget.isPassword || widget.obscureText;
-    _effectiveFocusNode.addListener(_onFocusOrTextChanged);
-    _effectiveController.addListener(_onFocusOrTextChanged);
+    _effectiveFocusNode.addListener(_onStateChanged);
+    _effectiveController.addListener(_onStateChanged);
   }
 
-  @override
-  void didUpdateWidget(DeenTextField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.focusNode != widget.focusNode) {
-      (oldWidget.focusNode ?? _internalFocusNode)?.removeListener(
-        _onFocusOrTextChanged,
-      );
-      _effectiveFocusNode.addListener(_onFocusOrTextChanged);
-    }
-    if (oldWidget.controller != widget.controller) {
-      (oldWidget.controller ?? _internalController)?.removeListener(
-        _onFocusOrTextChanged,
-      );
-      _effectiveController.addListener(_onFocusOrTextChanged);
-    }
-  }
-
-  void _onFocusOrTextChanged() {
-    if (mounted) {
-      setState(() {});
-    }
+  void _onStateChanged() {
+    if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
-    _effectiveFocusNode.removeListener(_onFocusOrTextChanged);
-    _effectiveController.removeListener(_onFocusOrTextChanged);
+    _effectiveFocusNode.removeListener(_onStateChanged);
+    _effectiveController.removeListener(_onStateChanged);
     _internalFocusNode?.dispose();
     _internalController?.dispose();
     super.dispose();
   }
 
-  void _toggleObscurity() {
-    setState(() {
-      _obscured = !_obscured;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final hasFocus = _effectiveFocusNode.hasFocus;
-    final hasText = _effectiveController.text.isNotEmpty;
-    final showLabel =
-        widget.labelText != null &&
-        (!widget.dynamicLabel || hasFocus || hasText);
-    final effectiveHint = showLabel
-        ? (widget.hintText ?? widget.labelText)
-        : (widget.labelText ?? widget.hintText);
-
-    return FormField<String>(
-      initialValue: widget.initialValue ?? _effectiveController.text,
-      validator: widget.validator,
-      autovalidateMode: widget.autovalidateMode,
-      builder: (field) {
-        final hasError = field.hasError && field.errorText != null;
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Dynamic Label: Only visible when active (focused or has text)
-            if (showLabel) ...[
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                child: Text(
-                  widget.labelText!,
-                  style: AppTypography.inputLabel().copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: AppColors.textPrimary,
-                  ),
-                ),
-              ),
-            ],
-
-            TextField(
-              controller: _effectiveController,
-              onChanged: (val) {
-                field.didChange(val);
-                widget.onChanged?.call(val);
-              },
-              onSubmitted: widget.onSubmitted,
-              enabled: widget.enabled,
-              readOnly: widget.readOnly,
-              obscureText: _obscured,
-              keyboardType: widget.keyboardType,
-              textInputAction: widget.textInputAction,
-              focusNode: _effectiveFocusNode,
-              maxLines: widget.maxLines,
-              autofocus: widget.autofocus,
-              inputFormatters: widget.inputFormatters,
-              style: widget.enabled
-                  ? AppTypography.inputText()
-                  : AppTypography.inputText(color: AppColors.textTertiary),
-              cursorColor: AppColors.primary,
-              decoration: InputDecoration(
-                isDense: true,
-                filled: true,
-                fillColor: widget.enabled
-                    ? AppColors.inputBackground
-                    : AppColors.inputBackground.withValues(alpha: 0.6),
-                hintText: effectiveHint,
-                hintStyle: AppTypography.inputHint(),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 17,
-                  vertical: 18,
-                ),
-                prefixIcon: widget.prefixIcon != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                        ),
-                        child: widget.prefixIcon,
-                      )
-                    : null,
-                prefixIconConstraints: const BoxConstraints(
-                  minWidth: 44,
-                  minHeight: 24,
-                ),
-                suffixIcon: widget.isPassword
-                    ? IconButton(
-                        icon: Icon(
-                          _obscured
-                              ? Icons.visibility_off_outlined
-                              : Icons.visibility_outlined,
-                          color: AppColors.textTertiary,
-                          size: 20,
-                        ),
-                        onPressed: widget.enabled ? _toggleObscurity : null,
-                      )
-                    : widget.suffixIcon != null
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                        ),
-                        child: widget.suffixIcon,
-                      )
-                    : null,
-                suffixIconConstraints: const BoxConstraints(
-                  minWidth: 44,
-                  minHeight: 24,
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: AppSpacing.roundedMd,
-                  borderSide: BorderSide(
-                    color: hasError ? AppColors.error : AppColors.inputBorder,
-                  ),
-                ),
-                disabledBorder: OutlineInputBorder(
-                  borderRadius: AppSpacing.roundedMd,
-                  borderSide: BorderSide(
-                    color: AppColors.inputBorder.withValues(alpha: 0.5),
-                  ),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: AppSpacing.roundedMd,
-                  borderSide: BorderSide(
-                    color: hasError
-                        ? AppColors.error
-                        : AppColors.inputFocusedBorder,
-                    width: 1.5,
-                  ),
-                ),
-              ),
-            ),
-
-            // Validator text with error icon on the left
-            if (hasError) ...[
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: AppSpacing.xs,
-                  left: AppSpacing.xs,
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 14,
-                      color: AppColors.error,
-                    ),
-                    const SizedBox(width: AppSpacing.xs),
-                    Expanded(
-                      child: Text(
-                        field.errorText!,
-                        style: AppTypography.inputError(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ],
-        );
-      },
+    return DeenTextFieldView(
+      config: widget,
+      effectiveController: _effectiveController,
+      effectiveFocusNode: _effectiveFocusNode,
+      obscured: _obscured,
+      onToggleObscure: () => setState(() => _obscured = !_obscured),
     );
   }
 }

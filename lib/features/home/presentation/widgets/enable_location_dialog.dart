@@ -1,3 +1,4 @@
+import 'package:deen_app/core/constants/app_strings.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_spacing.dart';
 import 'package:deen_app/core/theme/app_typography.dart';
@@ -60,7 +61,7 @@ class EnableLocationDialog extends StatelessWidget {
 
             // 2. Heading
             Text(
-              'Enable Location',
+              HomeStrings.enableLocation,
               textAlign: TextAlign.center,
               style: AppTypography.headlineMedium(color: const Color(0xFFF9FAFB))
                   .copyWith(fontWeight: FontWeight.w700, fontSize: 20),
@@ -101,7 +102,7 @@ class EnableLocationDialog extends StatelessWidget {
                   elevation: 0,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 ),
-                child: const Text('Turn On Location', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                child: const Text(HomeStrings.turnOnLocation, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
               ),
             ),
           ],

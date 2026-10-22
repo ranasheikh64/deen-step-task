@@ -1,3 +1,4 @@
+import 'package:deen_app/core/constants/app_strings.dart';
 import 'package:deen_app/core/routing/app_routes.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_spacing.dart';
@@ -21,12 +22,12 @@ class OnboardingActionButtons extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         DeenButton(
-          text: 'Create Account',
+          text: OnboardingStrings.createAccount,
           onPressed: () => context.push(AppRoutes.signUp),
         ),
         const SizedBox(height: AppSpacing.lg),
         DeenButton(
-          text: 'Already registered? Log In',
+          text: OnboardingStrings.alreadyRegistered,
           variant: DeenButtonVariant.secondary,
           onPressed: () => context.push(AppRoutes.login),
         ),
@@ -52,7 +53,7 @@ class OnboardingActionButtons extends StatelessWidget {
                       ),
                     )
                   : Text(
-                      'Continue as Guest',
+                      OnboardingStrings.continueAsGuest,
                       style: AppTypography.bodyMedium(
                         color: AppColors.textSecondary,
                       ),

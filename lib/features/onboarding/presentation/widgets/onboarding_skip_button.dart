@@ -1,3 +1,4 @@
+import 'package:deen_app/core/constants/app_strings.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_spacing.dart';
 import 'package:deen_app/core/theme/app_typography.dart';
@@ -31,7 +32,7 @@ class OnboardingSkipButton extends StatelessWidget {
                     .read<OnboardingBloc>()
                     .add(const OnboardingSkipRequested()),
             child: Text(
-              'Skip',
+              CommonStrings.skip,
               style: AppTypography.buttonSmall(
                 color: AppColors.textSecondary,
               ),
