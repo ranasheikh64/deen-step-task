@@ -6,20 +6,26 @@ import 'package:deen_app/features/home/presentation/widgets/home_header_chips.da
 import 'package:deen_app/features/home/presentation/widgets/home_prayer_timeline_row.dart';
 import 'package:flutter/material.dart';
 
-/// Top header card showing mosque scenery, current time, countdown & prayer timeline.
+/// Full-width edge-to-edge mosque header with notch/status-bar integration.
 class HomePrayerHeaderWidget extends StatelessWidget {
   const HomePrayerHeaderWidget({super.key});
 
+  static const _bottomRadius = BorderRadius.vertical(
+    bottom: Radius.circular(AppSpacing.radiusXxl),
+  );
+
   @override
   Widget build(BuildContext context) {
+    final topPadding = MediaQuery.paddingOf(context).top;
     return Container(
-      height: 355,
+      width: double.infinity,
+      height: 360 + topPadding,
       decoration: const BoxDecoration(
         color: AppColors.homeHeaderBackground,
-        borderRadius: AppSpacing.roundedXxl,
+        borderRadius: _bottomRadius,
       ),
       child: ClipRRect(
-        borderRadius: AppSpacing.roundedXxl,
+        borderRadius: _bottomRadius,
         child: Stack(
           children: [
             Positioned.fill(
@@ -31,29 +37,34 @@ class HomePrayerHeaderWidget extends StatelessWidget {
             ),
             Positioned(
               right: -10,
-              top: 30,
+              top: topPadding + 10,
               child: Container(
-                width: 90,
-                height: 90,
-                decoration: const BoxDecoration(
+                width: 140,
+                height: 140,
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: AppColors.warning,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.warning,
-                      blurRadius: 40,
-                      spreadRadius: 20,
-                    ),
-                  ],
+                  gradient: RadialGradient(
+                    colors: [
+                      AppColors.homeSunCore,
+                      AppColors.homeSunGlow.withValues(alpha: 0.75),
+                      AppColors.homeSunOuter.withValues(alpha: 0.3),
+                      AppColors.transparent,
+                    ],
+                    stops: const [0.0, 0.45, 0.75, 1.0],
+                  ),
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+              padding: EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                topPadding + AppSpacing.xs,
+                AppSpacing.lg,
+                AppSpacing.sm,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: AppSpacing.md),
                   const Center(
                     child: HomeLocationChip(location: 'Gulshan, Dhaka'),
                   ),
@@ -65,50 +76,23 @@ class HomePrayerHeaderWidget extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  _buildTimeAndDateRow('18', ':55', 'Sat, 25 Oct 2025'),
+                  const HomeTimeAndDateDisplay(
+                    hour: '18',
+                    minute: ':55',
+                    date: 'Sat, 25 Oct 2025',
+                  ),
                   const SizedBox(height: AppSpacing.xs),
                   const HomeCountdownChip(
                     countdownText: 'Maghrib in 0h 29m 3s left',
                   ),
                   const Spacer(),
                   const HomePrayerTimelineRow(),
-                  const SizedBox(height: AppSpacing.sm),
                 ],
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildTimeAndDateRow(String hour, String minute, String date) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(
-                text: hour,
-                style: const TextStyle(color: AppColors.homeTimeLime),
-              ),
-              TextSpan(
-                text: minute,
-                style: const TextStyle(color: AppColors.textPrimary),
-              ),
-            ],
-            style: AppTypography.displayLarge(color: AppColors.textPrimary)
-                .copyWith(fontSize: 48, fontWeight: FontWeight.w700),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.md),
-        Text(
-          date,
-          style: AppTypography.bodySmall(color: AppColors.textSecondary),
-        ),
-      ],
     );
   }
 }

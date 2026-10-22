@@ -9,8 +9,8 @@ import 'package:deen_app/features/home/presentation/widgets/home_stats_row_widge
 import 'package:flutter/material.dart';
 
 /// Home Screen matching Figma node 1:1335.
-/// Main dashboard landing view displaying prayer times, daily streak,
-/// AI reflection, abundance verse, and quick actions.
+/// Full-width edge-to-edge mosque header under status bar/notch,
+/// followed by padded content cards.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -18,26 +18,29 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Column(
-            children: [
-              SizedBox(height: AppSpacing.sm),
-              HomePrayerHeaderWidget(),
-              SizedBox(height: AppSpacing.md),
-              HomePrayerTrackerCard(),
-              SizedBox(height: AppSpacing.md),
-              HomeStatsRowWidget(),
-              SizedBox(height: AppSpacing.md),
-              HomeAiReflectionCard(),
-              SizedBox(height: AppSpacing.md),
-              HomeAbundanceVerseCard(),
-              SizedBox(height: AppSpacing.md),
-              HomeQuickActionsGrid(),
-              SizedBox(height: AppSpacing.xxxl),
-            ],
-          ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            HomePrayerHeaderWidget(),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: AppSpacing.md),
+              child: Column(
+                children: [
+                  SizedBox(height: AppSpacing.md),
+                  HomePrayerTrackerCard(),
+                  SizedBox(height: AppSpacing.md),
+                  HomeStatsRowWidget(),
+                  SizedBox(height: AppSpacing.md),
+                  HomeAiReflectionCard(),
+                  SizedBox(height: AppSpacing.md),
+                  HomeAbundanceVerseCard(),
+                  SizedBox(height: AppSpacing.md),
+                  HomeQuickActionsGrid(),
+                  SizedBox(height: AppSpacing.xxxl),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

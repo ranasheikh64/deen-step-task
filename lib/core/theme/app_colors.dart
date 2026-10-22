@@ -75,6 +75,9 @@ class AppColors {
   static const Color prayerCircleInactive = Color(0xFF0F0F0F);
   static const Color prayerCircleDashed = Color(0xFF2C302E);
   static const Color prayerTimelineBorder = Color(0xFF2C2E2D);
+  static const Color homeSunCore = Color(0xFFFFD54F);
+  static const Color homeSunGlow = Color(0xFFFFB300);
+  static const Color homeSunOuter = Color(0xFFFF8F00);
 
   // Overlay & Shadows
   static const Color shadow = Color(0x1A000000);

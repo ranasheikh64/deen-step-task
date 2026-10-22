@@ -64,3 +64,48 @@ class HomeCountdownChip extends StatelessWidget {
     );
   }
 }
+
+/// Formatted large digital clock with colored hour and gregorian date.
+class HomeTimeAndDateDisplay extends StatelessWidget {
+  const HomeTimeAndDateDisplay({
+    required this.hour,
+    required this.minute,
+    required this.date,
+    super.key,
+  });
+
+  final String hour;
+  final String minute;
+  final String date;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(
+                text: hour,
+                style: const TextStyle(color: AppColors.homeTimeLime),
+              ),
+              TextSpan(
+                text: minute,
+                style: const TextStyle(color: AppColors.textPrimary),
+              ),
+            ],
+            style: AppTypography.displayLarge(color: AppColors.textPrimary)
+                .copyWith(fontSize: 48, fontWeight: FontWeight.w700),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.md),
+        Text(
+          date,
+          style: AppTypography.bodySmall(color: AppColors.textSecondary),
+        ),
+      ],
+    );
+  }
+}
