@@ -6,6 +6,7 @@ import 'package:deen_app/features/home/domain/entities/user_location_entity.dart
 import 'package:deen_app/features/home/domain/repositories/home_repository.dart';
 import 'package:deen_app/features/home/domain/usecases/get_current_location_usecase.dart';
 import 'package:deen_app/features/home/domain/usecases/get_home_dashboard_usecase.dart';
+import 'package:deen_app/features/home/domain/usecases/update_location_usecase.dart';
 import 'package:deen_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:deen_app/features/home/presentation/bloc/home_event.dart';
 import 'package:deen_app/features/home/presentation/bloc/home_state.dart';
@@ -28,6 +29,14 @@ class FakeHomeRepository implements HomeRepository {
 
   @override
   Future<Either<Failure, UserLocationEntity>> getCurrentLocation() async {
+    return const Right(UserLocationEntity(address: 'Dhaka, Bangladesh'));
+  }
+
+  @override
+  Future<Either<Failure, UserLocationEntity>> updateLocation({
+    required String latitude,
+    required String longitude,
+  }) async {
     return const Right(UserLocationEntity(address: 'Dhaka, Bangladesh'));
   }
 }
@@ -56,6 +65,7 @@ void main() {
     bloc = HomeBloc(
       getHomeDashboardUseCase: GetHomeDashboardUseCase(fakeRepo),
       getCurrentLocationUseCase: GetCurrentLocationUseCase(fakeRepo),
+      updateLocationUseCase: UpdateLocationUseCase(fakeRepo),
       locationService: fakeLocation,
     );
   });

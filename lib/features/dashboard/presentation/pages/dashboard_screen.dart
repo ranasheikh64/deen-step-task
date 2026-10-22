@@ -1,6 +1,9 @@
+import 'package:deen_app/core/di/service_locator.dart';
+import 'package:deen_app/core/services/storage/secure_storage_service.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_typography.dart';
 import 'package:deen_app/core/widgets/deen_bottom_navigation_bar.dart';
+import 'package:deen_app/core/widgets/deen_button.dart';
 import 'package:deen_app/features/home/presentation/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -37,12 +40,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       backgroundColor: AppColors.background,
       body: IndexedStack(
         index: _currentIndex,
-        children: const [
-          HomeScreen(),
-          _TabPlaceholder(title: 'Community Screen'),
-          _TabPlaceholder(title: 'Reflect Screen'),
-          _TabPlaceholder(title: 'Prayer Screen'),
-          _TabPlaceholder(title: 'Profile Screen'),
+        children: [
+          const HomeScreen(),
+          const _TabPlaceholder(title: 'Community Screen'),
+          const _TabPlaceholder(title: 'Reflect Screen'),
+          const _TabPlaceholder(title: 'Prayer Screen'),
+          _TabPlaceholder(
+            title: 'Profile Screen',
+            onTap: () async {
+              await sl<SecureStorageService>().logout(context);
+            },
+            hasLogoutButton: true,
+          ),
         ],
       ),
       bottomNavigationBar: DeenBottomNavigationBar(
@@ -54,17 +63,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
 }
 
 class _TabPlaceholder extends StatelessWidget {
-  const _TabPlaceholder({required this.title});
+  const _TabPlaceholder({
+    required this.title,
+    this.onTap,
+    this.hasLogoutButton = false,
+  });
 
   final String title;
+  final VoidCallback? onTap;
+  final bool hasLogoutButton;
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Center(
-        child: Text(
-          title,
-          style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              style: AppTypography.headlineMedium(color: AppColors.textPrimary),
+            ),
+            const SizedBox(height: 16),
+            if (hasLogoutButton)
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: DeenButton(onPressed: onTap, text: 'Logout'),
+              )
+            else
+              const SizedBox.shrink(),
+          ],
         ),
       ),
     );

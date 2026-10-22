@@ -37,6 +37,10 @@ class LocationService {
     try {
       final hasPermission = await isPermissionGranted();
       if (!hasPermission) return null;
+      final enabled = await Geolocator.isLocationServiceEnabled();
+      if (!enabled) {
+        return await Geolocator.getLastKnownPosition();
+      }
       return await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.medium,
@@ -45,7 +49,11 @@ class LocationService {
       );
     } on Object catch (e) {
       debugPrint('⚠️ [LocationService] getCurrentPosition error: $e');
-      return null;
+      try {
+        return await Geolocator.getLastKnownPosition();
+      } on Object catch (_) {
+        return null;
+      }
     }
   }
 }
