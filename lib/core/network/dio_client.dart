@@ -22,10 +22,7 @@ class DioClient {
       baseUrl: AppConfig.instance.baseUrl,
       connectTimeout: AppConstants.connectTimeout,
       receiveTimeout: AppConstants.receiveTimeout,
-      headers: const {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
+      headers: const {'Content-Type': 'application/json', 'Accept': 'application/json'},
     );
 
     _dio.interceptors.add(

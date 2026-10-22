@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:deen_app/core/error/failures.dart';
 import 'package:deen_app/core/services/notifications/push_notification_service.dart';
@@ -34,7 +35,7 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
         deviceId: await _resolveId(deviceId),
       );
-      await _save(res.accessToken, res.refreshToken);
+      await _save(res);
       return res;
     });
   }
@@ -45,16 +46,10 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String confirmPassword,
     String? fullName,
-  }) {
-    return _catch(
-      () => remoteDataSource.register(
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-        fullName: fullName,
-      ),
-    );
-  }
+  }) => _catch(() => remoteDataSource.register(
+    email: email, password: password,
+    confirmPassword: confirmPassword, fullName: fullName,
+  ));
 
   @override
   Future<Either<Failure, AuthResultEntity>> verifyOtp({
@@ -68,15 +63,14 @@ class AuthRepositoryImpl implements AuthRepository {
         otp: otp,
         deviceId: await _resolveId(deviceId),
       );
-      await _save(res.accessToken, res.refreshToken);
+      await _save(res);
       return res;
     });
   }
 
   @override
-  Future<Either<Failure, String>> resendOtp({required String email}) {
-    return _catch(() => remoteDataSource.resendOtp(email: email));
-  }
+  Future<Either<Failure, String>> resendOtp({required String email}) =>
+      _catch(() => remoteDataSource.resendOtp(email: email));
 
   @override
   Future<Either<Failure, AuthResultEntity>> guestLogin({
@@ -86,7 +80,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final res = await remoteDataSource.guestLogin(
         deviceId: await _resolveId(deviceId),
       );
-      await _save(res.accessToken, res.refreshToken);
+      await _save(res);
       return res;
     });
   }
@@ -100,9 +94,14 @@ class AuthRepositoryImpl implements AuthRepository {
     });
   }
 
-  Future<void> _save(String? a, String? r) async {
-    if (a != null && a.isNotEmpty) await secureStorage.saveToken(a);
-    if (r != null && r.isNotEmpty) await secureStorage.saveRefreshToken(r);
+  Future<void> _save(AuthResultEntity res) async {
+    if (res.accessToken?.isNotEmpty ?? false) await secureStorage.saveToken(res.accessToken!);
+    if (res.refreshToken?.isNotEmpty ?? false) await secureStorage.saveRefreshToken(res.refreshToken!);
+    final u = res.user;
+    await secureStorage.saveUserData(jsonEncode({
+      'id': u.id, 'email': u.email, 'full_name': u.fullName,
+      'mobile': u.mobile, 'is_verified': u.isVerified,
+    }));
   }
 
   Future<Either<Failure, T>> _catch<T>(Future<T> Function() fn) async {

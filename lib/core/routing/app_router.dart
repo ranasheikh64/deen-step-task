@@ -14,13 +14,18 @@ import 'package:go_router/go_router.dart';
 class AppRouter {
   const AppRouter._();
 
-  static final GoRouter router = GoRouter(
-    initialLocation: AppRoutes.onboarding,
-    routes: [
-      GoRoute(
-        path: AppRoutes.onboarding,
-        builder: (context, state) => const OnboardingScreen(),
-      ),
+  static GoRouter? _router;
+
+  static GoRouter get router => _router ??= createRouter(AppRoutes.onboarding);
+
+  static GoRouter createRouter([String initialLocation = AppRoutes.onboarding]) {
+    return _router = GoRouter(
+      initialLocation: initialLocation,
+      routes: [
+        GoRoute(
+          path: AppRoutes.onboarding,
+          builder: (context, state) => const OnboardingScreen(),
+        ),
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
@@ -65,4 +70,5 @@ class AppRouter {
       ),
     ],
   );
+  }
 }

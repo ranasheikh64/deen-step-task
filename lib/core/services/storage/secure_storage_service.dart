@@ -24,6 +24,14 @@ class SecureStorageService {
     return _storage.read(key: AppConstants.refreshTokenKey);
   }
 
+  Future<void> saveUserData(String userData) async {
+    await _storage.write(key: AppConstants.userKey, value: userData);
+  }
+
+  Future<String?> getUserData() {
+    return _storage.read(key: AppConstants.userKey);
+  }
+
   Future<void> clearAll() async {
     await _storage.deleteAll();
   }
