@@ -1,5 +1,12 @@
 import 'package:deen_app/core/constants/app_constants.dart';
+import 'package:deen_app/core/di/service_locator.dart';
+import 'package:deen_app/core/network/api_endpoints.dart';
+import 'package:deen_app/core/network/dio_client.dart';
+import 'package:deen_app/core/routing/app_routes.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:go_router/go_router.dart';
 
 /// Secure storage wrapper for sensitive credentials and tokens
 class SecureStorageService {
@@ -46,5 +53,22 @@ class SecureStorageService {
 
   Future<void> delete(String key) async {
     await _storage.delete(key: key);
+  }
+
+  Future<void> logout(BuildContext context) async {
+    final ref = await getRefreshToken() ?? '';
+    if (ref.isNotEmpty && sl.isRegistered<DioClient>()) {
+      try {
+        await sl<DioClient>().post<Map<String, dynamic>>(
+          ApiEndpoints.logout,
+          data: FormData.fromMap({'refresh': ref}),
+        );
+      } on Object catch (e) {
+        debugPrint('Logout API notice: $e');
+      }
+    }
+    await clearAll();
+    if (!context.mounted) return;
+    GoRouter.of(context).go(AppRoutes.login);
   }
 }
