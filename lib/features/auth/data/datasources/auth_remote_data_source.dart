@@ -1,6 +1,7 @@
 import 'package:deen_app/core/network/api_endpoints.dart';
 import 'package:deen_app/core/network/dio_client.dart';
 import 'package:deen_app/features/auth/data/models/auth_response_model.dart';
+import 'package:dio/dio.dart';
 
 /// Contract and implementation for remote authentication API calls
 abstract class AuthRemoteDataSource {
@@ -98,7 +99,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthResponseModel> guestLogin({required String deviceId}) async {
     final response = await client.post<Map<String, dynamic>>(
       ApiEndpoints.guestLogin,
-      data: {'device_id': _validDeviceId(deviceId)},
+      data: FormData.fromMap({'device_id': _validDeviceId(deviceId)}),
     );
     return AuthResponseModel.fromJson(response.data!);
   }
@@ -107,7 +108,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<void> logout({required String refreshToken}) async {
     await client.post<Map<String, dynamic>>(
       ApiEndpoints.logout,
-      data: {'refresh': refreshToken},
+      data: FormData.fromMap({'refresh': refreshToken}),
     );
   }
 }
