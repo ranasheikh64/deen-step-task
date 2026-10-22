@@ -32,3 +32,20 @@ class AuthFailure extends Failure {
 class CacheFailure extends Failure {
   const CacheFailure([super.message = 'Cache retrieval failed']);
 }
+
+class TooManyAttemptsFailure extends Failure {
+  const TooManyAttemptsFailure({
+    String message = 'Too many attempts. Please try again later.',
+    this.retryAfterSeconds = 60,
+    int? statusCode = 429,
+  }) : super(message, statusCode);
+
+  final int retryAfterSeconds;
+
+  @override
+  List<Object?> get props => [message, retryAfterSeconds, statusCode];
+}
+
+class ValidationFailure extends Failure {
+  const ValidationFailure(super.message, [super.statusCode = 400]);
+}

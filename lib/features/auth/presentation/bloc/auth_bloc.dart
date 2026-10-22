@@ -1,67 +1,84 @@
+import 'package:deen_app/core/di/service_locator.dart';
+import 'package:deen_app/core/error/failures.dart';
+import 'package:deen_app/features/auth/domain/usecases/login_usecase.dart';
+import 'package:deen_app/features/auth/domain/usecases/register_usecase.dart';
+import 'package:deen_app/features/auth/domain/usecases/resend_otp_usecase.dart';
+import 'package:deen_app/features/auth/domain/usecases/verify_otp_usecase.dart';
 import 'package:deen_app/features/auth/presentation/bloc/auth_event.dart';
+import 'package:deen_app/features/auth/presentation/bloc/auth_otp_handlers.dart';
+import 'package:deen_app/features/auth/presentation/bloc/auth_social_handlers.dart';
 import 'package:deen_app/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Business logic controller for login and registration flows
-class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  AuthBloc() : super(const AuthInitial()) {
+/// Business logic controller for authentication flows
+class AuthBloc extends Bloc<AuthEvent, AuthState>
+    with AuthSocialHandlers, AuthOtpHanglers {
+  AuthBloc({
+    LoginUseCase? loginUseCase,
+    RegisterUseCase? registerUseCase,
+    VerifyOtpUseCase? verifyOtpUseCase,
+    ResendOtpUseCase? resendOtpUseCase,
+  }) : loginUseCase =
+           loginUseCase ??
+           (sl.isRegistered<LoginUseCase>() ? sl<LoginUseCase>() : null),
+       registerUseCase =
+           registerUseCase ??
+           (sl.isRegistered<RegisterUseCase>() ? sl<RegisterUseCase>() : null),
+       verifyOtpUseCase =
+           verifyOtpUseCase ??
+           (sl.isRegistered<VerifyOtpUseCase>()
+               ? sl<VerifyOtpUseCase>()
+               : null),
+       resendOtpUseCase =
+           resendOtpUseCase ??
+           (sl.isRegistered<ResendOtpUseCase>()
+               ? sl<ResendOtpUseCase>()
+               : null),
+       super(const AuthInitial()) {
     on<AuthLoginSubmitted>(_onLoginSubmitted);
     on<AuthRegisterSubmitted>(_onRegisterSubmitted);
-    on<AuthGuestSignInRequested>(_onGuestSignInRequested);
-    on<AuthGoogleSignInRequested>(_onGoogleSignInRequested);
-    on<AuthAppleSignInRequested>(_onAppleSignInRequested);
-    on<AuthOtpSubmitted>(_onOtpSubmitted);
-    on<AuthResendOtpRequested>(_onResendOtpRequested);
+    on<AuthOtpSubmitted>(onOtpSubmitted);
+    on<AuthResendOtpRequested>(onResendOtpRequested);
+    on<AuthGuestSignInRequested>(onGuest);
+    on<AuthGoogleSignInRequested>(onGoogle);
+    on<AuthAppleSignInRequested>(onApple);
   }
 
-  int _remainingAttempts = 3;
-
-  Future<void> _onOtpSubmitted(
-    AuthOtpSubmitted event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthLoading());
-    await Future<void>.delayed(const Duration(milliseconds: 600));
-
-    // '0000' triggers incorrect OTP to demonstrate error state and attempt decrementing
-    if (event.otp == '0000') {
-      _remainingAttempts--;
-      if (_remainingAttempts <= 0) {
-        emit(const AuthTooManyAttemptsState(lockoutMinutes: 30));
-      } else {
-        emit(
-          AuthOtpFailureState(
-            errorMessage: 'Incorrect Code',
-            remainingAttempts: _remainingAttempts,
-          ),
-        );
-      }
-    } else {
-      _remainingAttempts = 3;
-      emit(
-        const AuthVerificationSuccess(message: 'Email verified successfully'),
-      );
-    }
-  }
-
-  Future<void> _onResendOtpRequested(
-    AuthResendOtpRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthLoading());
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    _remainingAttempts = 3;
-    emit(AuthRequiresVerification(email: event.email));
-  }
+  final LoginUseCase? loginUseCase;
+  final RegisterUseCase? registerUseCase;
+  @override
+  final VerifyOtpUseCase? verifyOtpUseCase;
+  @override
+  final ResendOtpUseCase? resendOtpUseCase;
 
   Future<void> _onLoginSubmitted(
     AuthLoginSubmitted event,
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
-    await Future<void>.delayed(const Duration(milliseconds: 600));
+    if (loginUseCase != null) {
+      final res = await loginUseCase!(
+        email: event.email,
+        password: event.password,
+      );
+      res.fold(
+        (failure) {
+          if (failure is TooManyAttemptsFailure) {
+            final mins = (failure.retryAfterSeconds / 60).ceil();
+            emit(AuthTooManyAttemptsState(lockoutMinutes: mins));
+          } else {
+            emit(AuthFailureState(errorMessage: failure.message));
+          }
+        },
+        (data) => emit(AuthSuccess(message: data.detail ?? 'Login successful')),
+      );
+    } else {
+      _fallbackLogin(event, emit);
+    }
+  }
 
-    if (event.email.contains('@') && event.password.length >= 6) {
+  void _fallbackLogin(AuthLoginSubmitted e, Emitter<AuthState> emit) {
+    if (e.email.contains('@') && e.password.length >= 6) {
       emit(const AuthSuccess(message: 'Login successful'));
     } else {
       emit(const AuthFailureState(errorMessage: 'Invalid email or password'));
@@ -80,42 +97,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       return;
     }
-
-    emit(const AuthLoading());
-    await Future<void>.delayed(const Duration(milliseconds: 600));
-
     if (event.password != event.confirmPassword) {
       emit(const AuthFailureState(errorMessage: 'Passwords do not match'));
       return;
     }
-
-    emit(AuthRequiresVerification(email: event.email));
-  }
-
-  Future<void> _onGuestSignInRequested(
-    AuthGuestSignInRequested event,
-    Emitter<AuthState> emit,
-  ) async {
     emit(const AuthLoading());
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-    emit(const AuthSuccess(message: 'Logged in as Guest'));
-  }
-
-  Future<void> _onGoogleSignInRequested(
-    AuthGoogleSignInRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthLoading());
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    emit(const AuthSuccess(message: 'Google Sign-in successful'));
-  }
-
-  Future<void> _onAppleSignInRequested(
-    AuthAppleSignInRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    emit(const AuthLoading());
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-    emit(const AuthSuccess(message: 'Apple Sign-in successful'));
+    if (registerUseCase != null) {
+      final res = await registerUseCase!(
+        email: event.email,
+        password: event.password,
+        confirmPassword: event.confirmPassword,
+        fullName: event.fullName,
+      );
+      res.fold(
+        (failure) => emit(AuthFailureState(errorMessage: failure.message)),
+        (_) => emit(AuthRequiresVerification(email: event.email)),
+      );
+    } else {
+      emit(AuthRequiresVerification(email: event.email));
+    }
   }
 }

@@ -1,9 +1,11 @@
+import 'package:deen_app/core/di/service_locator.dart';
 import 'package:deen_app/core/routing/app_router.dart';
 import 'package:deen_app/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initServiceLocator();
   runApp(const DeenApp());
 }
 

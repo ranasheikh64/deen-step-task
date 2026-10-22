@@ -15,7 +15,7 @@ class AppConfig {
   static AppConfig get instance {
     return _instance ??
         const AppConfig(
-          baseUrl: 'https://test.deenstep.com',
+          baseUrl: 'https://test.deenstep.com/api/v1',
           environment: 'production',
           enableLogging: false,
         );
