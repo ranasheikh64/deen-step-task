@@ -1,6 +1,7 @@
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_typography.dart';
 import 'package:deen_app/core/widgets/deen_bottom_navigation_bar.dart';
+import 'package:deen_app/features/home/presentation/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 
 /// Main Dashboard Screen containing the persistent [DeenBottomNavigationBar]
@@ -37,7 +38,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       body: IndexedStack(
         index: _currentIndex,
         children: const [
-          _TabPlaceholder(title: 'Home Screen'),
+          HomeScreen(),
           _TabPlaceholder(title: 'Community Screen'),
           _TabPlaceholder(title: 'Reflect Screen'),
           _TabPlaceholder(title: 'Prayer Screen'),

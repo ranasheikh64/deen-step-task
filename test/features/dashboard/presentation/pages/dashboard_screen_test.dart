@@ -1,5 +1,6 @@
 import 'package:deen_app/core/widgets/deen_bottom_navigation_bar.dart';
 import 'package:deen_app/features/dashboard/presentation/pages/dashboard_screen.dart';
+import 'package:deen_app/features/home/presentation/pages/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,7 +12,7 @@ void main() {
       await tester.pumpWidget(const MaterialApp(home: DashboardScreen()));
 
       expect(find.byType(DeenBottomNavigationBar), findsOneWidget);
-      expect(find.text('Home Screen'), findsOneWidget);
+      expect(find.byType(HomeScreen), findsOneWidget);
     });
 
     testWidgets('switches views when bottom navigation bar item is tapped', (
@@ -19,7 +20,7 @@ void main() {
     ) async {
       await tester.pumpWidget(const MaterialApp(home: DashboardScreen()));
 
-      expect(find.text('Home Screen'), findsOneWidget);
+      expect(find.byType(HomeScreen), findsOneWidget);
 
       // Tap Community
       await tester.tap(find.text('Community'));

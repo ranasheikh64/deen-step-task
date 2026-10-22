@@ -21,7 +21,7 @@ class AppColors {
   static const Color buttonBorder = Color(0xFFB9EB42);
   static const Color starParticle = Color(0xFFF9FAFB);
 
-  // Checkbox Colors (Figma node 1:780)
+  // Checkbox Colors
   static const Color checkboxWhite = Color(0xFFFFFFFF);
   static const Color checkboxCheckmark = Color(0xFF111827);
 
@@ -56,11 +56,25 @@ class AppColors {
   static const Color error = Color(0xFFEF4444);
   static const Color info = Color(0xFF3B82F6);
 
-  // Navigation Bar Colors (Figma node 1:1429 / 1:609)
+  // Navigation Bar Colors
   static const Color navBackground = Color(0xFF121C18);
   static const Color navActiveBackground = Color(0xFF0F1612);
   static const Color navActiveItem = Color(0xFFB9EB42);
   static const Color navInactiveItem = Color(0xFF475569);
+
+  // Home Screen Colors
+  static const Color homeHeaderBackground = Color(0xFF17201C);
+  static const Color homeCardBackground = Color(0xFF16231A);
+  static const Color homeCardBorder = Color(0x0DFFFFFF);
+  static const Color homeChipBackground = Color(0x4D1B3227);
+  static const Color homeTimeLime = Color(0xFFA3D152);
+  static const Color homeCountdownMuted = Color(0xFFC2CAB0);
+  static const Color homeStreakYellow = Color(0xFFFDE047);
+  static const Color homeQuickActionOverlay = Color(0xCC1E2926);
+  static const Color homeZakatYellow = Color(0xFFEAB308);
+  static const Color prayerCircleInactive = Color(0xFF0F0F0F);
+  static const Color prayerCircleDashed = Color(0xFF2C302E);
+  static const Color prayerTimelineBorder = Color(0xFF2C2E2D);
 
   // Overlay & Shadows
   static const Color shadow = Color(0x1A000000);

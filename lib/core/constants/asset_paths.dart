@@ -31,6 +31,27 @@ class AssetPaths {
   static const String icCommunity = icNavCommunity;
   static const String icProfile = icNavProfile;
 
+  // Home Screen Images
+  static const String imgHomeMosqueHeader =
+      '$_imagesBase/home_mosque_header.png';
+  static const String imgQuranVerseBg = '$_imagesBase/quran_verse_bg.png';
+
+  // Home Screen Icons
+  static const String icLocationPin = '$_iconsBase/ic_location_pin.svg';
+  static const String icCountdownClock = '$_iconsBase/ic_countdown_clock.svg';
+  static const String icPrayerFajr = '$_iconsBase/ic_prayer_fajr.svg';
+  static const String icPrayerDhuhr = '$_iconsBase/ic_prayer_dhuhr.svg';
+  static const String icPrayerAsr = '$_iconsBase/ic_prayer_asr.svg';
+  static const String icPrayerMaghrib = '$_iconsBase/ic_prayer_maghrib.svg';
+  static const String icQuestionMark = '$_iconsBase/ic_question_mark.svg';
+  static const String icDailyGoalClock = '$_iconsBase/ic_daily_goal_clock.svg';
+  static const String icStreakFire = '$_iconsBase/ic_streak_fire.svg';
+  static const String icAiWand = '$_iconsBase/ic_ai_wand.svg';
+  static const String icVerseBook = '$_iconsBase/ic_verse_book.svg';
+  static const String icQuickQibla = '$_iconsBase/ic_quick_qibla.svg';
+  static const String icQuickHijri = '$_iconsBase/ic_quick_hijri.svg';
+  static const String icQuickTimes = '$_iconsBase/ic_quick_times.svg';
+
   // Action & Status Icons
   static const String icNotification = '$_iconsBase/ic_notification.svg';
   static const String icLocation = '$_iconsBase/ic_location.svg';

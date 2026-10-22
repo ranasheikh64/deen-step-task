@@ -21,6 +21,7 @@ class AppSpacing {
   static const double radiusMd = 12;
   static const double radiusLg = 16;
   static const double radiusXl = 24;
+  static const double radiusXxl = 32;
   static const double radiusFull = 999;
 
   // Border Radius Constants
@@ -35,6 +36,9 @@ class AppSpacing {
   );
   static const BorderRadius roundedXl = BorderRadius.all(
     Radius.circular(radiusXl),
+  );
+  static const BorderRadius roundedXxl = BorderRadius.all(
+    Radius.circular(radiusXxl),
   );
   static const BorderRadius roundedFull = BorderRadius.all(
     Radius.circular(radiusFull),
