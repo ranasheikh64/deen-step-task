@@ -1,7 +1,11 @@
+import 'package:deen_app/core/routing/app_routes.dart';
+import 'package:deen_app/core/widgets/deen_bottom_navigation_bar.dart';
 import 'package:deen_app/core/widgets/deen_button.dart';
 import 'package:deen_app/features/auth/presentation/pages/login_screen.dart';
+import 'package:deen_app/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   group('LoginScreen Tests', () {
@@ -47,6 +51,40 @@ void main() {
         );
         expect(enabledButton.isEnabled, isTrue);
         expect(enabledButton.onPressed, isNotNull);
+      },
+    );
+
+    testWidgets(
+      'successful login navigates to dashboard with bottom navigation',
+      (tester) async {
+        final router = GoRouter(
+          initialLocation: AppRoutes.login,
+          routes: [
+            GoRoute(
+              path: AppRoutes.login,
+              builder: (context, state) => const LoginScreen(),
+            ),
+            GoRoute(
+              path: AppRoutes.dashboard,
+              builder: (context, state) => const DashboardScreen(),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(MaterialApp.router(routerConfig: router));
+
+        final textFields = find.byType(TextField);
+        await tester.enterText(textFields.at(0), 'user@example.com');
+        await tester.enterText(textFields.at(1), 'password123');
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.widgetWithText(DeenButton, 'Log In'));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 700));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(DashboardScreen), findsOneWidget);
+        expect(find.byType(DeenBottomNavigationBar), findsOneWidget);
       },
     );
   });
