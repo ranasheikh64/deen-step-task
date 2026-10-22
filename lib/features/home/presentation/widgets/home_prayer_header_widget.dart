@@ -8,7 +8,18 @@ import 'package:flutter/material.dart';
 
 /// Full-width edge-to-edge mosque header with notch/status-bar integration.
 class HomePrayerHeaderWidget extends StatelessWidget {
-  const HomePrayerHeaderWidget({super.key});
+  const HomePrayerHeaderWidget({
+    super.key,
+    this.location = 'Gulshan, Dhaka',
+    this.hijriDate = '3 Jumada Al-Awwal, 1447 H',
+    this.gregorianDate = 'Sat, 25 Oct 2025',
+    this.countdownText = 'Maghrib in 0h 29m 3s left',
+  });
+
+  final String location;
+  final String hijriDate;
+  final String gregorianDate;
+  final String countdownText;
 
   static const _bottomRadius = BorderRadius.vertical(
     bottom: Radius.circular(AppSpacing.radiusXxl),
@@ -17,6 +28,10 @@ class HomePrayerHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.paddingOf(context).top;
+    final now = DateTime.now();
+    final hourStr = now.hour.toString().padLeft(2, '0');
+    final minStr = ':${now.minute.toString().padLeft(2, '0')}';
+
     return Container(
       width: double.infinity,
       height: 360 + topPadding,
@@ -65,26 +80,22 @@ class HomePrayerHeaderWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Center(
-                    child: HomeLocationChip(location: 'Gulshan, Dhaka'),
-                  ),
+                  Center(child: HomeLocationChip(location: location)),
                   const SizedBox(height: AppSpacing.md),
                   Text(
-                    '3 Jumada Al-Awwal, 1447 H',
+                    hijriDate,
                     style: AppTypography.bodyMedium(
                       color: AppColors.textPrimary.withValues(alpha: 0.9),
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  const HomeTimeAndDateDisplay(
-                    hour: '18',
-                    minute: ':55',
-                    date: 'Sat, 25 Oct 2025',
+                  HomeTimeAndDateDisplay(
+                    hour: hourStr,
+                    minute: minStr,
+                    date: gregorianDate,
                   ),
                   const SizedBox(height: AppSpacing.xs),
-                  const HomeCountdownChip(
-                    countdownText: 'Maghrib in 0h 29m 3s left',
-                  ),
+                  HomeCountdownChip(countdownText: countdownText),
                   const Spacer(),
                   const HomePrayerTimelineRow(),
                 ],
