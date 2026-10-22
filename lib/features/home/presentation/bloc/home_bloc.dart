@@ -6,7 +6,7 @@ import 'package:deen_app/features/home/presentation/bloc/home_event.dart';
 import 'package:deen_app/features/home/presentation/bloc/home_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-/// Business logic component for Home Screen dashboard and location permission
+/// Business logic component for Home Screen dashboard and location
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     required this.getHomeDashboardUseCase,
@@ -24,13 +24,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final UpdateLocationUseCase updateLocationUseCase;
   final LocationService locationService;
 
-  Future<void> _syncCoordinatesIfAllowed() async {
+  Future<bool> _syncCoordinatesIfAllowed() async {
     final granted = await locationService.isPermissionGranted();
-    if (!granted) return;
+    if (!granted) return false;
     final pos = await locationService.getCurrentPosition();
-    final lat = pos?.latitude.toString() ?? '23.8103';
-    final lng = pos?.longitude.toString() ?? '90.4125';
-    await updateLocationUseCase(latitude: lat, longitude: lng);
+    final lat = pos != null ? pos.latitude.toStringAsFixed(6) : '23.810300';
+    final lng = pos != null ? pos.longitude.toStringAsFixed(6) : '90.412500';
+    final result = await updateLocationUseCase(latitude: lat, longitude: lng);
+    return result.isRight();
   }
 
   Future<void> _onDashboardRequested(
@@ -41,16 +42,31 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final hasPermission = await locationService.isPermissionGranted();
     if (hasPermission) {
       await _syncCoordinatesIfAllowed();
+    } else {
+      await getCurrentLocationUseCase();
     }
+
     final result = await getHomeDashboardUseCase();
-    result.fold(
-      (failure) => emit(HomeError(message: failure.message)),
-      (dashboard) => emit(
-        HomeLoaded(
-          dashboard: dashboard,
-          showLocationDialog: !hasPermission,
-        ),
-      ),
+    await result.fold(
+      (failure) async => emit(HomeError(message: failure.message)),
+      (dashboard) async {
+        if (dashboard.isLocationRequired || dashboard.timings.isEmpty) {
+          if (hasPermission) {
+            final synced = await _syncCoordinatesIfAllowed();
+            if (synced) {
+              final refetched = await getHomeDashboardUseCase();
+              refetched.fold(
+                (_) => emit(HomeLoaded(dashboard: dashboard, showLocationDialog: false)),
+                (newD) => emit(HomeLoaded(dashboard: newD, showLocationDialog: false)),
+              );
+              return;
+            }
+          }
+          emit(HomeLoaded(dashboard: dashboard, showLocationDialog: true));
+        } else {
+          emit(HomeLoaded(dashboard: dashboard, showLocationDialog: !hasPermission));
+        }
+      },
     );
   }
 
@@ -61,12 +77,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final hasPermission = await locationService.isPermissionGranted();
     if (state is HomeLoaded) {
       final current = state as HomeLoaded;
-      emit(
-        HomeLoaded(
-          dashboard: current.dashboard,
-          showLocationDialog: !hasPermission,
-        ),
-      );
+      emit(HomeLoaded(
+        dashboard: current.dashboard,
+        showLocationDialog: !hasPermission,
+      ));
     }
   }
 
@@ -75,22 +89,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     final granted = await locationService.requestPermission();
-    if (!granted) {
-      if (state is HomeLoaded) {
-        final current = state as HomeLoaded;
-        emit(HomeLoaded(dashboard: current.dashboard, showLocationDialog: false));
-      }
-      return;
-    }
-
     emit(const HomeLoading());
-    await _syncCoordinatesIfAllowed();
+    if (granted) {
+      await _syncCoordinatesIfAllowed();
+    } else {
+      await updateLocationUseCase(latitude: '23.810300', longitude: '90.412500');
+    }
     final result = await getHomeDashboardUseCase();
     result.fold(
       (failure) => emit(HomeError(message: failure.message)),
-      (dashboard) => emit(
-        HomeLoaded(dashboard: dashboard, showLocationDialog: false),
-      ),
+      (dashboard) => emit(HomeLoaded(dashboard: dashboard, showLocationDialog: false)),
     );
   }
 }

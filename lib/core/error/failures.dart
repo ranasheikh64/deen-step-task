@@ -29,6 +29,13 @@ class AuthFailure extends Failure {
   ]);
 }
 
+class NotFoundFailure extends Failure {
+  const NotFoundFailure([
+    super.message = 'No location saved',
+    super.statusCode = 404,
+  ]);
+}
+
 class CacheFailure extends Failure {
   const CacheFailure([super.message = 'Cache retrieval failed']);
 }

@@ -1,17 +1,13 @@
 import 'package:deen_app/core/di/service_locator.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
-import 'package:deen_app/core/theme/app_spacing.dart';
 import 'package:deen_app/features/home/presentation/bloc/home_bloc.dart';
 import 'package:deen_app/features/home/presentation/bloc/home_event.dart';
 import 'package:deen_app/features/home/presentation/bloc/home_state.dart';
 import 'package:deen_app/features/home/presentation/widgets/enable_location_dialog.dart';
-import 'package:deen_app/features/home/presentation/widgets/home_abundance_verse_card.dart';
-import 'package:deen_app/features/home/presentation/widgets/home_ai_reflection_card.dart';
+import 'package:deen_app/features/home/presentation/widgets/home_body_content.dart';
+import 'package:deen_app/features/home/presentation/widgets/home_error_widget.dart';
 import 'package:deen_app/features/home/presentation/widgets/home_prayer_header_widget.dart';
-import 'package:deen_app/features/home/presentation/widgets/home_prayer_tracker_card.dart';
-import 'package:deen_app/features/home/presentation/widgets/home_quick_actions_grid.dart';
 import 'package:deen_app/features/home/presentation/widgets/home_screen_shimmer.dart';
-import 'package:deen_app/features/home/presentation/widgets/home_stats_row_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,6 +48,12 @@ class _HomeScreenContent extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is HomeLoading || state is HomeInitial) return const HomeScreenShimmer();
+          if (state is HomeError) {
+            return HomeErrorWidget(
+              message: state.message,
+              onRetry: () => context.read<HomeBloc>().add(const HomeDashboardRequested()),
+            );
+          }
           if (state is! HomeLoaded) return const SizedBox.shrink();
 
           final d = state.dashboard;
@@ -75,39 +77,7 @@ class _HomeScreenContent extends StatelessWidget {
                     timings: d.timings,
                     activePrayer: d.nextPrayerName,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-                    child: Column(
-                      children: [
-                        const SizedBox(height: AppSpacing.md),
-                        HomePrayerTrackerCard(
-                          prayerName: d.nextPrayerName,
-                          trackedCount: d.dailyGoalCompleted,
-                          totalCount: d.dailyGoalTarget,
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                        HomeStatsRowWidget(
-                          completedPrayers: d.dailyGoalCompleted,
-                          totalPrayers: d.dailyGoalTarget,
-                          streakDays: d.streakCurrent,
-                        ),
-                        if (d.aiReflection.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.md),
-                          HomeAiReflectionCard(message: d.aiReflection),
-                        ],
-                        if (d.abundanceVerseTranslation.isNotEmpty) ...[
-                          const SizedBox(height: AppSpacing.md),
-                          HomeAbundanceVerseCard(
-                            source: d.abundanceVerseReference,
-                            verse: d.abundanceVerseTranslation,
-                          ),
-                        ],
-                        const SizedBox(height: AppSpacing.md),
-                        const HomeQuickActionsGrid(),
-                        const SizedBox(height: AppSpacing.xxxl),
-                      ],
-                    ),
-                  ),
+                  HomeBodyContent(dashboard: d),
                 ],
               ),
             ),

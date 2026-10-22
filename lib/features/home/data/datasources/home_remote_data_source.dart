@@ -43,13 +43,23 @@ class HomeRemoteDataSourceImpl implements HomeRemoteDataSource {
     required String latitude,
     required String longitude,
   }) async {
+    final formattedLat = _formatCoordinate(latitude);
+    final formattedLng = _formatCoordinate(longitude);
     final response = await client.patch<Map<String, dynamic>>(
       ApiEndpoints.userLocationUpdate,
-      data: {'latitude': latitude, 'longitude': longitude},
+      data: {'latitude': formattedLat, 'longitude': formattedLng},
     );
     final data = response.data?['data'] as Map<String, dynamic>? ??
         response.data ??
         {};
     return UserLocationModel.fromJson(data);
+  }
+
+  String _formatCoordinate(String coord) {
+    final parsed = double.tryParse(coord.trim());
+    if (parsed != null) {
+      return parsed.toStringAsFixed(6);
+    }
+    return coord.trim();
   }
 }

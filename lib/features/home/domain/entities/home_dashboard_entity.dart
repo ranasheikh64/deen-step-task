@@ -18,6 +18,7 @@ class HomeDashboardEntity extends Equatable {
     this.abundanceVerseArabic = '',
     this.abundanceVerseTranslation = '',
     this.abundanceVerseReference = '',
+    this.isLocationRequired = false,
   });
 
   final UserLocationEntity location;
@@ -34,6 +35,7 @@ class HomeDashboardEntity extends Equatable {
   final String abundanceVerseArabic;
   final String abundanceVerseTranslation;
   final String abundanceVerseReference;
+  final bool isLocationRequired;
 
   @override
   List<Object?> get props => [
@@ -51,5 +53,6 @@ class HomeDashboardEntity extends Equatable {
     abundanceVerseArabic,
     abundanceVerseTranslation,
     abundanceVerseReference,
+    isLocationRequired,
   ];
 }

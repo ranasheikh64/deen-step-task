@@ -18,6 +18,7 @@ class HomeDashboardModel extends HomeDashboardEntity {
     super.abundanceVerseArabic,
     super.abundanceVerseTranslation,
     super.abundanceVerseReference,
+    super.isLocationRequired,
   });
 
   factory HomeDashboardModel.fromJson(Map<String, dynamic> json) {
@@ -53,12 +54,14 @@ class HomeDashboardModel extends HomeDashboardEntity {
         ? '$gregWeekday, $gregDate'
         : (gregDate as String? ?? '');
 
+    final statusStr = data['status'] as String? ?? json['status'] as String? ?? '';
+    final isLocRequired = statusStr == 'UPDATE_LOCATION_REQUIRED';
+
     return HomeDashboardModel(
       location: UserLocationModel.fromJson(locJson),
       hijriDate: hijriStr,
       gregorianDate: gregStr,
       timings: timingsMap,
-
       nextPrayerName: nextP['name'] as String? ?? '',
       nextPrayerTime: nextP['at'] as String? ?? '',
       nextPrayerSecondsUntil: nextP['seconds_until'] as int? ?? 0,
@@ -69,6 +72,7 @@ class HomeDashboardModel extends HomeDashboardEntity {
       abundanceVerseArabic: verse['arabic'] as String? ?? '',
       abundanceVerseTranslation: verse['translation'] as String? ?? '',
       abundanceVerseReference: verse['reference'] as String? ?? '',
+      isLocationRequired: isLocRequired,
     );
   }
 }
