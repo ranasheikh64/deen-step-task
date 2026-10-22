@@ -1,3 +1,4 @@
+import 'package:deen_app/core/di/service_locator.dart';
 import 'package:deen_app/core/routing/app_routes.dart';
 import 'package:deen_app/core/theme/app_colors.dart';
 import 'package:deen_app/core/theme/app_spacing.dart';
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _authBloc = widget.authBloc ?? AuthBloc();
+    _authBloc = widget.authBloc ?? (sl.isRegistered<AuthBloc>() ? sl<AuthBloc>() : AuthBloc());
     _emailController.addListener(_onFieldChanged);
     _passwordController.addListener(_onFieldChanged);
   }
@@ -193,10 +194,27 @@ class _LoginScreenState extends State<LoginScreen> {
                       // 8. Social Login Section
                       SocialAuthButtons(
                         label: 'Log In With',
+                        isLoading: isLoading,
                         onGoogleTap: () =>
                             _authBloc.add(const AuthGoogleSignInRequested()),
                         onAppleTap: () =>
                             _authBloc.add(const AuthAppleSignInRequested()),
+                      ),
+                      const SizedBox(height: AppSpacing.lg),
+                      Center(
+                        child: TextButton(
+                          onPressed: isLoading
+                              ? null
+                              : () => _authBloc.add(
+                                    const AuthGuestSignInRequested(),
+                                  ),
+                          child: Text(
+                            'Continue as Guest',
+                            style: AppTypography.bodyMedium(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.xxl),
                     ],
