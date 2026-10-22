@@ -1,6 +1,9 @@
 import 'package:deen_app/core/routing/app_routes.dart';
 import 'package:deen_app/features/auth/presentation/pages/login_screen.dart';
+import 'package:deen_app/features/auth/presentation/pages/otp_verification_screen.dart';
 import 'package:deen_app/features/auth/presentation/pages/register_screen.dart';
+import 'package:deen_app/features/auth/presentation/pages/registration_success_screen.dart';
+import 'package:deen_app/features/auth/presentation/pages/too_many_attempts_screen.dart';
 import 'package:deen_app/features/onboarding/presentation/pages/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -32,9 +35,18 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.otpVerification,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('OTP Verification Screen')),
-        ),
+        builder: (context, state) {
+          final email = (state.extra as String?) ?? 'user@example.com';
+          return OtpVerificationScreen(email: email);
+        },
+      ),
+      GoRoute(
+        path: AppRoutes.registrationSuccess,
+        builder: (context, state) => const RegistrationSuccessScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.tooManyAttempts,
+        builder: (context, state) => const TooManyAttemptsScreen(),
       ),
       GoRoute(
         path: AppRoutes.privacyPolicy,

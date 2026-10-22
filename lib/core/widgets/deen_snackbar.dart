@@ -107,6 +107,20 @@ class DeenSnackBar {
     );
   }
 
+  /// Convenience shortcut for info snackbars
+  static void showInfo(
+    BuildContext context,
+    String message, {
+    Duration duration = const Duration(seconds: 3),
+  }) {
+    show(
+      context,
+      message: message,
+      type: DeenSnackBarType.info,
+      duration: duration,
+    );
+  }
+
   static Color _getBackgroundColor(DeenSnackBarType type) {
     switch (type) {
       case DeenSnackBarType.error:

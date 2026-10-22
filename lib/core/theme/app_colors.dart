@@ -59,5 +59,7 @@ class AppColors {
   // Overlay & Shadows
   static const Color shadow = Color(0x1A000000);
   static const Color overlay = Color(0x80000000);
+  static const Color primaryGlow = Color(0x4DB9EB42);
+  static const Color slateDot = Color(0xFF475569);
   static const Color transparent = Colors.transparent;
 }

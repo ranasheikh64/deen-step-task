@@ -59,3 +59,24 @@ class AuthAppleSignInRequested extends AuthEvent {
 class AuthGuestSignInRequested extends AuthEvent {
   const AuthGuestSignInRequested();
 }
+
+/// Triggered when submitting OTP verification code
+class AuthOtpSubmitted extends AuthEvent {
+  const AuthOtpSubmitted({required this.email, required this.otp});
+
+  final String email;
+  final String otp;
+
+  @override
+  List<Object?> get props => [email, otp];
+}
+
+/// Triggered when requesting OTP resend
+class AuthResendOtpRequested extends AuthEvent {
+  const AuthResendOtpRequested({required this.email});
+
+  final String email;
+
+  @override
+  List<Object?> get props => [email];
+}

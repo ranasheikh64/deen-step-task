@@ -47,3 +47,37 @@ class AuthFailureState extends AuthState {
   @override
   List<Object?> get props => [errorMessage];
 }
+
+/// OTP verified successfully
+class AuthVerificationSuccess extends AuthState {
+  const AuthVerificationSuccess({required this.message});
+
+  final String message;
+
+  @override
+  List<Object?> get props => [message];
+}
+
+/// OTP verification failed with remaining attempts
+class AuthOtpFailureState extends AuthState {
+  const AuthOtpFailureState({
+    required this.errorMessage,
+    required this.remainingAttempts,
+  });
+
+  final String errorMessage;
+  final int remainingAttempts;
+
+  @override
+  List<Object?> get props => [errorMessage, remainingAttempts];
+}
+
+/// Too many incorrect attempts / account locked out
+class AuthTooManyAttemptsState extends AuthState {
+  const AuthTooManyAttemptsState({required this.lockoutMinutes});
+
+  final int lockoutMinutes;
+
+  @override
+  List<Object?> get props => [lockoutMinutes];
+}
