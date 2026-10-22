@@ -1,6 +1,7 @@
 import 'package:deen_app/app.dart';
 import 'package:deen_app/core/di/service_locator.dart';
 import 'package:deen_app/core/services/auth/auth_session_manager.dart';
+import 'package:deen_app/core/services/auth/initialize_google_login.dart';
 import 'package:deen_app/core/services/notifications/push_notification_service.dart';
 import 'package:deen_app/core/utils/app_bloc_observer.dart';
 import 'package:deen_app/firebase_options.dart';
@@ -23,6 +24,7 @@ Future<void> main() async {
   }
 
   await initServiceLocator();
+  await initGoogleSignIn();
   try {
     await sl<PushNotificationService>().initialize();
   } on Object catch (e) {

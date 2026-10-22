@@ -12,7 +12,28 @@
           "package_name": "com.deenApp.APP"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "176098675776-3g2731grk7ksglf7g0nqhon7c8mu87oj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deenApp.APP",
+            "certificate_hash": "acd34d8d7de170a2bbe6a50c30e58e2563ef07aa"
+          }
+        },
+        {
+          "client_id": "176098675776-evf9rq2chnuhdibjclc2i64ebic7oc6p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.deenApp.APP",
+            "certificate_hash": "a0f4cb59d2f77487ab3e7a0954d01ec771d372ef"
+          }
+        },
+        {
+          "client_id": "176098675776-5ftvp14u8ijnv8348oj6jtv3johiosaf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBlCLDEzsxlb-TfAfM6fqV4LwLdvElvius"
@@ -20,7 +41,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "176098675776-5ftvp14u8ijnv8348oj6jtv3johiosaf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
