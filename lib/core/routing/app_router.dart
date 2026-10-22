@@ -1,4 +1,6 @@
 import 'package:deen_app/core/routing/app_routes.dart';
+import 'package:deen_app/features/auth/presentation/pages/login_screen.dart';
+import 'package:deen_app/features/auth/presentation/pages/register_screen.dart';
 import 'package:deen_app/features/onboarding/presentation/pages/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -17,21 +19,37 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.login,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Login Screen (Coming next)')),
-        ),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: AppRoutes.signUp,
+        builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.forgotPassword,
+        builder: (context, state) =>
+            const Scaffold(body: Center(child: Text('Forgot Password Screen'))),
+      ),
+      GoRoute(
+        path: AppRoutes.otpVerification,
         builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Sign Up Screen (Coming next)')),
+          body: Center(child: Text('OTP Verification Screen')),
         ),
       ),
       GoRoute(
+        path: AppRoutes.privacyPolicy,
+        builder: (context, state) =>
+            const Scaffold(body: Center(child: Text('Privacy Policy'))),
+      ),
+      GoRoute(
+        path: AppRoutes.termsAndConditions,
+        builder: (context, state) =>
+            const Scaffold(body: Center(child: Text('Terms & Conditions'))),
+      ),
+      GoRoute(
         path: AppRoutes.dashboard,
-        builder: (context, state) => const Scaffold(
-          body: Center(child: Text('Dashboard Screen (Coming next)')),
-        ),
+        builder: (context, state) =>
+            const Scaffold(body: Center(child: Text('Dashboard Screen'))),
       ),
     ],
   );

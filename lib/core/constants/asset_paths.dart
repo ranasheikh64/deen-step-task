@@ -7,6 +7,8 @@ class AssetPaths {
 
   // Branding & Logo
   static const String icDeenLogo = '$_iconsBase/ic_deen_logo.svg';
+  static const String icGoogle = '$_iconsBase/ic_google.svg';
+  static const String icApple = '$_iconsBase/ic_apple.svg';
 
   // Onboarding Background SVGs
   static const String imgOnboardingBgScreen2 =
