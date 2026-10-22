@@ -287,12 +287,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       // 10. Social Login Section
                       SocialAuthButtons(
                         label: 'Log In With',
-                        onGoogleTap: () => _authBloc.add(
-                          const AuthGoogleSignInRequested(),
-                        ),
-                        onAppleTap: () => _authBloc.add(
-                          const AuthAppleSignInRequested(),
-                        ),
+                        onGoogleTap: () =>
+                            _authBloc.add(const AuthGoogleSignInRequested()),
+                        onAppleTap: () =>
+                            _authBloc.add(const AuthAppleSignInRequested()),
                       ),
                       const SizedBox(height: AppSpacing.xxl),
                     ],

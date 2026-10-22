@@ -4,6 +4,7 @@ import 'package:deen_app/features/auth/presentation/pages/otp_verification_scree
 import 'package:deen_app/features/auth/presentation/pages/register_screen.dart';
 import 'package:deen_app/features/auth/presentation/pages/registration_success_screen.dart';
 import 'package:deen_app/features/auth/presentation/pages/too_many_attempts_screen.dart';
+import 'package:deen_app/features/dashboard/presentation/pages/dashboard_screen.dart';
 import 'package:deen_app/features/onboarding/presentation/pages/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -60,8 +61,7 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.dashboard,
-        builder: (context, state) =>
-            const Scaffold(body: Center(child: Text('Dashboard Screen'))),
+        builder: (context, state) => const DashboardScreen(),
       ),
     ],
   );

@@ -56,6 +56,12 @@ class AppColors {
   static const Color error = Color(0xFFEF4444);
   static const Color info = Color(0xFF3B82F6);
 
+  // Navigation Bar Colors (Figma node 1:1429 / 1:609)
+  static const Color navBackground = Color(0xFF121C18);
+  static const Color navActiveBackground = Color(0xFF0F1612);
+  static const Color navActiveItem = Color(0xFFB9EB42);
+  static const Color navInactiveItem = Color(0xFF475569);
+
   // Overlay & Shadows
   static const Color shadow = Color(0x1A000000);
   static const Color overlay = Color(0x80000000);

@@ -17,7 +17,7 @@ void main() {
         find.textContaining('Your account has been created successfully'),
         findsOneWidget,
       );
-      expect(find.byIcon(Icons.check), findsOneWidget);
+      expect(find.byType(Image), findsOneWidget);
       expect(find.byType(DeenButton), findsOneWidget);
       expect(find.text('Go to Home'), findsOneWidget);
     });
